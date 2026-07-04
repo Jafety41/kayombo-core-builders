@@ -15,6 +15,7 @@ export interface Message {
   phone: string;
   details: string;
   created_at: string;
+  is_read?: boolean;
 }
 
 export interface Service {

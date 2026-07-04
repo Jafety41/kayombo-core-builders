@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
+import { toast } from 'sonner';
 import { ArrowLeft, Send, CheckCircle2, Loader2, Building2, HardHat, Construction } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 
@@ -32,11 +33,11 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ onBack }) => {
       }]);
 
       if (error) throw error;
+      toast.success('Application received successfully! Our team will contact you shortly.');
       setSubmitted(true);
     } catch (err) {
       console.error('Error submitting project request:', err);
-      // Fallback for demo
-      setSubmitted(true);
+      toast.error('Could not submit application. Please check your connection and try again.');
     } finally {
       setIsSubmitting(false);
     }

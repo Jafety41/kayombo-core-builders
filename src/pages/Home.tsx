@@ -19,6 +19,7 @@ import {
   Quote
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import { toast } from 'sonner';
 import { Project } from '../types';
 import { supabase } from '../lib/supabase';
 import { ProjectCarousel } from '../components/ProjectCarousel';
@@ -164,9 +165,9 @@ const Services = () => {
   }, [services.length]);
 
   return (
-    <section id="services" className="py-12 md:py-24 lg:py-32 bg-gray-50/50 scroll-mt-20">
+    <section id="services" className="py-8 md:py-24 lg:py-32 bg-gray-50/50 scroll-mt-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12">
-        <div className="text-center mb-10 md:mb-24 px-4">
+        <div className="text-center mb-8 md:mb-24 px-4">
           <span className="inline-block py-1.5 px-4 mb-4 rounded-full bg-blue-50 text-blue-900 text-[10px] font-bold uppercase tracking-[0.2em]">
             Expertise
           </span>
@@ -218,9 +219,9 @@ const Services = () => {
 
 const Projects = ({ onNavigate }: { onNavigate: (view: View) => void }) => {
   return (
-    <section id="projects" className="py-12 md:py-24 bg-white scroll-mt-20">
+    <section id="projects" className="py-8 md:py-24 bg-white scroll-mt-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12">
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 md:mb-16 gap-6 px-4 md:px-0">
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 md:mb-16 gap-6 px-4 md:px-0">
           <div className="max-w-2xl text-center md:text-left">
             <h2 className="text-2xl md:text-5xl font-extrabold tracking-tight text-gray-900 mb-4">Featured Projects</h2>
             <p className="text-sm md:text-lg text-gray-500 font-medium">A track record of stability and excellence in high-standard civil engineering across the city.</p>
@@ -281,9 +282,9 @@ const SuccessStories = () => {
   }, [testimonials.length]);
 
   return (
-    <section className="py-12 md:py-24 bg-gray-50/50 overflow-hidden">
+    <section className="py-8 md:py-24 bg-gray-50/50 overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12">
-        <div className="text-center mb-10 md:mb-16 px-4">
+        <div className="text-center mb-8 md:mb-16 px-4">
           <span className="inline-block py-1.5 px-4 mb-4 rounded-full bg-blue-50 text-blue-900 text-[10px] font-bold uppercase tracking-[0.2em]">
             Testimonials
           </span>
@@ -353,22 +354,34 @@ const FAQ = () => {
     {
       q: "Do you provide site inspections?",
       a: "Absolutely. We offer initial site surveys and ongoing supervision to ensure all work meets engineering specifications."
+    },
+    {
+      q: "What types of civil engineering projects do you undertake?",
+      a: "We specialize in a wide range of infrastructure projects including road construction, drainage systems (culverts and storm drains), commercial building foundations, retaining walls, and water supply networks."
+    },
+    {
+      q: "Do you provide architectural and structural design services?",
+      a: "Yes, our team of certified engineers offers comprehensive structural design and analysis to ensure safety, durability, and compliance with Tanzanian building codes."
+    },
+    {
+      q: "How do you ensure quality and safety on construction sites?",
+      a: "We strictly adhere to ISO standards and OSHA regulations. Every project is overseen by experienced site engineers, and we use high-grade, tested materials to guarantee structural integrity and worker safety."
     }
   ];
 
   return (
-    <section className="py-12 md:py-24 bg-white">
+    <section className="py-6 md:py-24 bg-white">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 className="text-2xl md:text-5xl font-extrabold tracking-tight text-gray-900 mb-10 text-center">Frequently Asked Questions</h2>
-        <div className="space-y-4">
+        <h2 className="text-2xl md:text-5xl font-extrabold tracking-tight text-gray-900 mb-6 md:mb-10 text-center">Frequently Asked Questions</h2>
+        <div className="space-y-2 md:space-y-4">
           {faqs.map((faq, i) => (
-            <div key={i} className="border border-gray-200 rounded-2xl overflow-hidden">
+            <div key={i} className="border border-gray-200 rounded-xl md:rounded-2xl overflow-hidden">
               <button
                 onClick={() => setOpenIndex(openIndex === i ? null : i)}
-                className="w-full flex items-center justify-between p-6 text-left hover:bg-gray-50 transition-colors"
+                className="w-full flex items-center justify-between p-4 md:p-6 text-left hover:bg-gray-50 transition-colors"
               >
-                <span className="font-semibold text-gray-900">{faq.q}</span>
-                {openIndex === i ? <ChevronUp className="w-5 h-5 text-gray-400" /> : <ChevronDown className="w-5 h-5 text-gray-400" />}
+                <span className="font-semibold text-gray-900 text-sm md:text-base">{faq.q}</span>
+                {openIndex === i ? <ChevronUp className="w-4 h-4 md:w-5 md:h-5 text-gray-400 shrink-0 ml-2" /> : <ChevronDown className="w-4 h-4 md:w-5 md:h-5 text-gray-400 shrink-0 ml-2" />}
               </button>
               <AnimatePresence>
                 {openIndex === i && (
@@ -377,7 +390,7 @@ const FAQ = () => {
                     animate={{ height: 'auto', opacity: 1 }}
                     exit={{ height: 0, opacity: 0 }}
                     transition={{ duration: 0.3 }}
-                    className="px-6 pb-6 text-gray-500 leading-relaxed"
+                    className="px-4 pb-4 md:px-6 md:pb-6 text-gray-500 text-sm md:text-base leading-relaxed"
                   >
                     {faq.a}
                   </motion.div>
@@ -392,9 +405,9 @@ const FAQ = () => {
 };
 
 const OfficeLocation = () => (
-  <section className="py-12 md:py-24 bg-white">
+  <section className="py-8 md:py-24 bg-white">
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 lg:gap-20 items-center">
         <div className="order-1 lg:order-1">
           <span className="inline-block py-1.5 px-4 mb-4 rounded-full bg-blue-50 text-blue-900 text-[10px] font-bold uppercase tracking-[0.2em]">
             Our Headquarters
@@ -436,7 +449,7 @@ const OfficeLocation = () => (
             href="https://maps.app.goo.gl/uXv7Z6vQ6C6z5z5v8" 
             target="_blank" 
             rel="noopener noreferrer"
-            className="mt-10 w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-full px-10 py-5 border border-gray-200 text-gray-900 font-bold hover:bg-gray-50 transition-all active:scale-95 shadow-sm"
+            className="mt-6 md:mt-10 w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 md:px-10 md:py-5 border border-gray-200 text-gray-900 font-bold hover:bg-gray-50 transition-all active:scale-95 shadow-sm text-sm md:text-base"
           >
             Get Directions <ArrowRight className="w-4 h-4" />
           </a>
@@ -451,7 +464,7 @@ const OfficeLocation = () => (
               height="100%"
               style={{ border: 0 }}
               allowFullScreen={true}
-              loading="lazy"
+              loading="eager"
               referrerPolicy="no-referrer-when-downgrade"
               title="Kayombo Location - UDSM"
               className="w-full h-full grayscale-[0.3] hover:grayscale-0 transition-all duration-700"
@@ -531,20 +544,20 @@ const Contact = () => {
     try {
       const { error } = await supabase.from('messages').insert([formData]);
       if (error) throw error;
-      setSubmitted(true);
+      toast.success('Message sent successfully! Our team will get back to you shortly.');
+      setFormData({ name: '', phone: '', details: '' });
     } catch (err) {
       console.error('Error saving message:', err);
-      // Fallback for demo: show success anyway
-      setSubmitted(true);
+      toast.error('Could not send message. Please check your connection and try again.');
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <section id="contact" className="py-12 md:py-24 lg:py-32 bg-gray-50/50 overflow-hidden scroll-mt-20">
+    <section id="contact" className="py-8 md:py-24 lg:py-32 bg-gray-50/50 overflow-hidden scroll-mt-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12">
-        <div className="text-center mb-10 md:mb-16">
+        <div className="text-center mb-8 md:mb-16">
           <span className="inline-block py-1.5 px-4 mb-4 rounded-full bg-blue-50 text-blue-900 text-[10px] font-bold uppercase tracking-[0.2em]">
             Get In Touch
           </span>
@@ -587,71 +600,51 @@ const Contact = () => {
         </div>
 
         <div className="max-w-3xl mx-auto bg-white p-6 md:p-12 rounded-[40px] border border-gray-100 shadow-2xl relative">
-          {submitted ? (
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="text-center py-12"
-            >
-              <div className="w-20 h-20 bg-green-50 rounded-full flex items-center justify-center text-green-600 mx-auto mb-6">
-                <CheckCircle2 className="w-10 h-10" />
-              </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-2">Message Sent!</h3>
-              <p className="text-gray-500 mb-8">Our engineering team will get back to you shortly.</p>
-              <button 
-                onClick={() => { setSubmitted(false); setFormData({ name: '', phone: '', details: '' }); }}
-                className="text-blue-900 font-bold uppercase tracking-widest text-xs hover:underline"
-              >
-                Send another message
-              </button>
-            </motion.div>
-          ) : (
-            <form className="space-y-6" onSubmit={handleSubmit}>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-700">Full Name</label>
-                  <input 
-                    type="text" 
-                    required
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-900/10 focus:border-blue-900 transition-all" 
-                    placeholder="John Doe"
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-700">Phone Number</label>
-                  <input 
-                    type="tel" 
-                    required
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-900/10 focus:border-blue-900 transition-all" 
-                    placeholder="+255..." 
-                    value={formData.phone}
-                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                  />
-                </div>
-              </div>
+          <form className="space-y-6" onSubmit={handleSubmit}>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700">Project Details</label>
-                <textarea 
-                  rows={4} 
+                <label className="text-sm font-medium text-gray-700">Full Name</label>
+                <input 
+                  type="text" 
                   required
                   className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-900/10 focus:border-blue-900 transition-all" 
-                  placeholder="Tell us about your project..."
-                  value={formData.details}
-                  onChange={(e) => setFormData({ ...formData, details: e.target.value })}
-                ></textarea>
+                  placeholder="John Doe"
+                  value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                />
               </div>
-              <button 
-                type="submit"
-                disabled={isSubmitting}
-                className="w-full rounded-full py-4 bg-blue-900 hover:bg-blue-800 text-white font-bold transition-all shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-              >
-                {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5" />}
-                {isSubmitting ? 'Sending...' : 'Send Message'}
-              </button>
-            </form>
-          )}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-gray-700">Phone Number</label>
+                <input 
+                  type="tel" 
+                  required
+                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-900/10 focus:border-blue-900 transition-all" 
+                  placeholder="+255..." 
+                  value={formData.phone}
+                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-gray-700">Project Details</label>
+              <textarea 
+                rows={4} 
+                required
+                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-900/10 focus:border-blue-900 transition-all" 
+                placeholder="Tell us about your project..."
+                value={formData.details}
+                onChange={(e) => setFormData({ ...formData, details: e.target.value })}
+              ></textarea>
+            </div>
+            <button 
+              type="submit"
+              disabled={isSubmitting}
+              className="w-full rounded-full py-3 md:py-4 bg-blue-900 hover:bg-blue-800 text-white font-bold transition-all shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm md:text-base"
+            >
+              {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5" />}
+              {isSubmitting ? 'Sending...' : 'Send Message'}
+            </button>
+          </form>
         </div>
       </div>
     </section>
@@ -754,7 +747,7 @@ export default function Home({ onNavigate, scrollToSection, onClearScroll }: Hom
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.8 }}
             onClick={scrollToTop}
-            className="fixed bottom-6 right-6 md:bottom-8 md:right-8 z-[60] w-10 h-10 md:w-14 md:h-14 bg-blue-900 text-white rounded-full flex items-center justify-center shadow-2xl shadow-blue-900/40 hover:bg-blue-800 transition-all hover:-translate-y-1 active:scale-95 group"
+            className="fixed bottom-[5.5rem] right-6 md:bottom-28 md:right-8 z-[60] w-10 h-10 md:w-14 md:h-14 bg-blue-900 text-white rounded-full flex items-center justify-center shadow-2xl shadow-blue-900/40 hover:bg-blue-800 transition-all hover:-translate-y-1 active:scale-95 group"
             aria-label="Scroll to top"
           >
             <ChevronUp className="w-5 h-5 md:w-6 md:h-6 group-hover:animate-bounce" />

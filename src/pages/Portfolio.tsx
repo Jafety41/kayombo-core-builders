@@ -79,7 +79,7 @@ const Portfolio: React.FC<PortfolioProps> = ({ onBack, onNavigate }) => {
               </p>
               <button 
                 onClick={() => onNavigate?.('project-form')}
-                className="rounded-full px-10 py-5 bg-white text-blue-900 font-bold shadow-xl transition-all hover:-translate-y-1 active:scale-95 text-sm md:text-base"
+                className="rounded-full px-6 py-3 md:px-10 md:py-5 bg-white text-blue-900 font-bold shadow-xl transition-all hover:-translate-y-1 active:scale-95 text-xs sm:text-sm md:text-base"
               >
                 Start Your Project
               </button>

@@ -15,9 +15,12 @@ import {
   ShieldCheck,
   Save,
   Trash2,
-  X as CloseIcon
+  X as CloseIcon,
+  Circle,
+  CheckCircle2 as CheckCircle2Icon
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import { toast } from 'sonner';
 import { Project, Message } from '../types';
 import { supabase } from '../lib/supabase';
 
@@ -51,23 +54,40 @@ export default function Dashboard({ onLogout }: { onLogout: () => void }) {
     if (data) setMessages(data);
   };
 
+  const markAsRead = async (id: string, is_read: boolean = false) => {
+    // Optimistic update
+    setMessages(messages.map(m => m.id === id ? { ...m, is_read: !is_read } : m));
+    
+    try {
+      const { error } = await supabase
+        .from('messages')
+        .update({ is_read: !is_read })
+        .eq('id', id);
+
+      if (error) {
+         // Revert on error
+         setMessages(messages.map(m => m.id === id ? { ...m, is_read } : m));
+         if (error.message?.includes('does not exist')) {
+           toast.error('Please update your database schema to support read status.');
+         } else {
+           throw error;
+         }
+      } else {
+         toast.success(!is_read ? 'Message marked as read' : 'Message marked as unread');
+      }
+    } catch (err) {
+      console.error('Error marking as read:', err);
+      toast.error('Failed to update message status.');
+    }
+  };
+
   const fetchProjects = async () => {
     setLoading(true);
     const { data, error } = await supabase.from('projects').select('*').order('created_at', { ascending: false });
-    if (data && data.length > 0) {
+    if (data) {
       setProjects(data);
-    } else {
-      // Fallback to mock if supabase fails or is empty
-      setProjects([
-        {
-          id: '1',
-          title: "Temeke Culvert",
-          location: "Dar es Salaam",
-          category: "Infrastructure",
-          image_url: "/images/temeke_culvert.jpg",
-          description: "Major drainage improvement project."
-        }
-      ]);
+    } else if (error) {
+      console.error('Error fetching projects:', error);
     }
     setLoading(false);
   };
@@ -89,6 +109,7 @@ export default function Dashboard({ onLogout }: { onLogout: () => void }) {
       
       if (data && data[0]) {
         setProjects([data[0], ...projects]);
+        toast.success('Project added successfully!');
         setIsModalOpen(false);
         setNewProject({
           title: '',
@@ -100,29 +121,7 @@ export default function Dashboard({ onLogout }: { onLogout: () => void }) {
       }
     } catch (err: any) {
       console.error('Error adding project:', err);
-      
-      // Fallback: Add to local state for demo purposes even if DB fails
-      const fallbackProject: Project = {
-        ...newProject,
-        id: Math.random().toString(36).substr(2, 9),
-      };
-      
-      setProjects([fallbackProject, ...projects]);
-      setIsModalOpen(false);
-      setNewProject({
-        title: '',
-        location: '',
-        category: 'Infrastructure',
-        image_url: '',
-        description: ''
-      });
-      
-      // If it's an RLS error, it's expected if not properly authenticated with Supabase Auth
-      if (err?.message?.includes('row-level security')) {
-        console.warn('Database access denied (RLS). Project added to local view only.');
-      } else {
-        alert('Could not save to database. Project added to current view only.');
-      }
+      toast.error('Could not save to database. Please check your connection.');
     } finally {
       setIsSubmitting(false);
     }
@@ -139,8 +138,10 @@ export default function Dashboard({ onLogout }: { onLogout: () => void }) {
 
       if (error) throw error;
       setProjects(projects.filter(p => p.id !== id));
+      toast.success('Project deleted successfully!');
     } catch (err) {
       console.error('Error deleting project:', err);
+      toast.error('Failed to delete project.');
     }
   };
 
@@ -155,8 +156,10 @@ export default function Dashboard({ onLogout }: { onLogout: () => void }) {
 
     if (error) {
       setSaveStatus('Error saving password.');
+      toast.error('Error saving password.');
     } else {
       setSaveStatus('Password updated successfully!');
+      toast.success('Password updated successfully!');
       setNewPassword('');
     }
   };
@@ -221,6 +224,26 @@ export default function Dashboard({ onLogout }: { onLogout: () => void }) {
     </>
   );
 
+  const recentActivities = [
+    ...messages.map(m => ({
+      date: new Date(m.created_at || Date.now()),
+      desc: `New message from ${m.name}`,
+      icon: <MessageSquare />
+    })),
+    ...projects.map(p => ({
+      date: new Date((p as any).created_at || Date.now()),
+      desc: `Project "${p.title}" added`,
+      icon: <FolderKanban />
+    }))
+  ]
+  .sort((a, b) => b.date.getTime() - a.date.getTime())
+  .slice(0, 4)
+  .map(a => ({
+    time: a.date.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' }),
+    desc: a.desc,
+    icon: a.icon
+  }));
+
   const Header = ({ title }: { title: string }) => (
     <header className="h-16 md:h-20 bg-white border-b border-gray-100 flex items-center justify-between px-4 md:px-10 sticky top-0 z-30">
       <div className="flex items-center gap-4">
@@ -258,8 +281,8 @@ export default function Dashboard({ onLogout }: { onLogout: () => void }) {
           <div className="p-4 md:p-10 space-y-6 md:space-y-10">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
               {[
-                { label: 'Active Projects', value: projects.length.toString(), icon: <FolderKanban />, color: 'bg-blue-500', trend: '+2 this month' },
-                { label: 'Total Messages', value: '48', icon: <MessageSquare />, color: 'bg-purple-500', trend: '+12 this week' },
+                { label: 'Active Projects', value: projects.length.toString(), icon: <FolderKanban />, color: 'bg-blue-500', trend: 'Total' },
+                { label: 'Total Messages', value: messages.length.toString(), icon: <MessageSquare />, color: 'bg-purple-500', trend: 'All leads' },
                 { label: 'Site Visitors', value: '2.4k', icon: <Users />, color: 'bg-orange-500', trend: '+18%' },
                 { label: 'Completion Rate', value: '94%', icon: <CheckCircle2 />, color: 'bg-green-500', trend: 'High efficiency' },
               ].map((stat, i) => (
@@ -302,12 +325,7 @@ export default function Dashboard({ onLogout }: { onLogout: () => void }) {
               <div className="bg-white rounded-[24px] md:rounded-3xl border border-gray-100 shadow-sm p-6 md:p-8">
                 <h3 className="font-extrabold text-gray-900 tracking-tight mb-6 md:mb-8">Recent Activity</h3>
                 <div className="space-y-6 md:space-y-8">
-                  {[
-                    { time: '2m ago', desc: 'New lead from John Doe', icon: <Users /> },
-                    { time: '1h ago', desc: 'Project "Temeke" updated', icon: <Clock /> },
-                    { time: '4h ago', desc: 'New message via WhatsApp', icon: <MessageSquare /> },
-                    { time: 'Yesterday', desc: 'Completed site inspection', icon: <CheckCircle2 /> },
-                  ].map((activity, i) => (
+                  {recentActivities.length > 0 ? recentActivities.map((activity, i) => (
                     <div key={i} className="flex gap-4">
                       <div className="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 shrink-0">
                         {activity.icon}
@@ -317,7 +335,9 @@ export default function Dashboard({ onLogout }: { onLogout: () => void }) {
                         <span className="text-[9px] text-gray-400 uppercase font-bold">{activity.time}</span>
                       </div>
                     </div>
-                  ))}
+                  )) : (
+                    <p className="text-gray-400 text-[10px] font-bold uppercase tracking-widest">No recent activity</p>
+                  )}
                 </div>
               </div>
             </div>
@@ -540,7 +560,7 @@ export default function Dashboard({ onLogout }: { onLogout: () => void }) {
               </div>
               <div className="bg-blue-50 px-4 py-2 rounded-xl flex items-center gap-2">
                 <div className="w-2 h-2 bg-blue-900 rounded-full animate-pulse" />
-                <span className="text-[10px] font-bold text-blue-900 uppercase tracking-widest">{messages.length} Total Messages</span>
+                <span className="text-[10px] font-bold text-blue-900 uppercase tracking-widest">{messages.filter(m => !m.is_read).length} Unread • {messages.length} Total</span>
               </div>
             </div>
 
@@ -551,9 +571,12 @@ export default function Dashboard({ onLogout }: { onLogout: () => void }) {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     key={msg.id}
-                    className="bg-white p-6 rounded-[24px] border border-gray-100 shadow-sm hover:shadow-md transition-all group"
+                    className={`bg-white p-6 rounded-[24px] border ${msg.is_read ? 'border-gray-100 opacity-70' : 'border-blue-200 shadow-md'} shadow-sm hover:shadow-md transition-all group relative overflow-hidden`}
                   >
-                    <div className="flex flex-col md:flex-row justify-between gap-4">
+                    {!msg.is_read && (
+                      <div className="absolute top-0 left-0 w-1.5 h-full bg-blue-900" />
+                    )}
+                    <div className="flex flex-col md:flex-row justify-between gap-4 ml-2">
                       <div className="space-y-1">
                         <div className="flex items-center gap-2 mb-2">
                           {msg.details.includes('[PROJECT APPLICATION') ? (
@@ -565,17 +588,24 @@ export default function Dashboard({ onLogout }: { onLogout: () => void }) {
                             {new Date(msg.created_at || '').toLocaleDateString('en-GB', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}
                           </span>
                         </div>
-                        <h4 className="text-lg font-bold text-gray-900">{msg.name}</h4>
-                        <p className="text-blue-900 text-sm font-semibold">{msg.phone}</p>
+                        <h4 className={`text-lg ${msg.is_read ? 'font-semibold text-gray-700' : 'font-extrabold text-gray-900'}`}>{msg.name}</h4>
+                        <p className={`text-sm ${msg.is_read ? 'font-medium text-gray-500' : 'font-semibold text-blue-900'}`}>{msg.phone}</p>
                       </div>
                       
                       <div className="flex-1 md:max-w-xl">
-                        <p className="text-gray-600 text-sm leading-relaxed whitespace-pre-wrap bg-gray-50/50 p-4 rounded-xl border border-gray-50">
+                        <p className={`text-sm leading-relaxed whitespace-pre-wrap p-4 rounded-xl border ${msg.is_read ? 'text-gray-500 bg-gray-50/50 border-gray-50' : 'text-gray-700 bg-blue-50/30 border-blue-50'}`}>
                           {msg.details}
                         </p>
                       </div>
 
-                      <div className="flex items-start">
+                      <div className="flex items-start gap-2">
+                        <button
+                          onClick={() => markAsRead(msg.id, msg.is_read)}
+                          className={`p-2 rounded-lg transition-all ${msg.is_read ? 'text-green-600 hover:bg-green-50' : 'text-gray-400 hover:text-blue-900 hover:bg-blue-50'}`}
+                          title={msg.is_read ? "Mark as unread" : "Mark as read"}
+                        >
+                          {msg.is_read ? <CheckCircle2Icon className="w-5 h-5" /> : <Circle className="w-5 h-5" />}
+                        </button>
                         <button 
                           onClick={async () => {
                             if (!confirm('Delete this message?')) return;
@@ -583,6 +613,7 @@ export default function Dashboard({ onLogout }: { onLogout: () => void }) {
                             fetchMessages();
                           }}
                           className="p-2 text-gray-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
+                          title="Delete message"
                         >
                           <Trash2 className="w-5 h-5" />
                         </button>

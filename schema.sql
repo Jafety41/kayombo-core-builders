@@ -17,6 +17,7 @@ CREATE TABLE messages (
     name TEXT NOT NULL,
     phone TEXT NOT NULL,
     details TEXT NOT NULL,
+    is_read BOOLEAN DEFAULT false,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
