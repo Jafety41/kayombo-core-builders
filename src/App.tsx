@@ -10,6 +10,7 @@ import Dashboard from './pages/Dashboard';
 import Portfolio from './pages/Portfolio';
 import ProjectForm from './pages/ProjectForm';
 import { Navbar } from './components/Navbar';
+import { AnimatePresence, motion, useScroll, useSpring } from 'motion/react';
 
 import { Toaster } from 'sonner';
 
@@ -40,6 +41,13 @@ export default function App() {
   const [view, setView] = useState<View>('home');
   const [scrollToSection, setScrollToSection] = useState<string | null>(null);
 
+  const { scrollYProgress } = useScroll();
+  const scaleX = useSpring(scrollYProgress, {
+    stiffness: 100,
+    damping: 30,
+    restDelta: 0.001
+  });
+
   const navigate = (newView: View, sectionId?: string) => {
     setView(newView);
     if (sectionId) {
@@ -55,33 +63,84 @@ export default function App() {
   };
 
   return (
-    <>
+    <div className="flex flex-col min-h-screen w-full">
+      <motion.div
+        className="fixed top-0 left-0 right-0 h-[3px] bg-blue-900 origin-left z-[100]"
+        style={{ scaleX }}
+      />
       <Toaster position="bottom-right" richColors />
       {view !== 'admin' && view !== 'dashboard' && (
         <Navbar currentView={view} onNavigate={navigate} />
       )}
-      {view === 'home' && (
-        <Home onNavigate={navigate} scrollToSection={scrollToSection} onClearScroll={handleClearScroll} />
-      )}
-      {view === 'portfolio' && (
-        <Portfolio onBack={() => navigate('home')} onNavigate={navigate} />
-      )}
-      {view === 'project-form' && (
-        <ProjectForm onBack={() => navigate('home')} />
-      )}
-      {view === 'admin' && (
-        <AdminLogin 
-          onBack={() => navigate('home')} 
-          onLogin={() => navigate('dashboard')}
-        />
-      )}
-      {view === 'dashboard' && (
-        <Dashboard onLogout={() => navigate('home')} />
-      )}
+      <AnimatePresence mode="wait">
+        {view === 'home' && (
+          <motion.div
+            key="home"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
+            className="flex-1 w-full"
+          >
+            <Home onNavigate={navigate} scrollToSection={scrollToSection} onClearScroll={handleClearScroll} />
+          </motion.div>
+        )}
+        {view === 'portfolio' && (
+          <motion.div
+            key="portfolio"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
+            className="flex-1 w-full"
+          >
+            <Portfolio onBack={() => navigate('home')} onNavigate={navigate} />
+          </motion.div>
+        )}
+        {view === 'project-form' && (
+          <motion.div
+            key="project-form"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
+            className="flex-1 w-full"
+          >
+            <ProjectForm onBack={() => navigate('home')} />
+          </motion.div>
+        )}
+        {view === 'admin' && (
+          <motion.div
+            key="admin"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
+            className="flex-1 w-full"
+          >
+            <AdminLogin 
+              onBack={() => navigate('home')} 
+              onLogin={() => navigate('dashboard')}
+            />
+          </motion.div>
+        )}
+        {view === 'dashboard' && (
+          <motion.div
+            key="dashboard"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
+            className="flex-1 w-full"
+          >
+            <Dashboard onLogout={() => navigate('home')} />
+          </motion.div>
+        )}
+      </AnimatePresence>
       
       {/* Floating WhatsApp Button */}
       {view !== 'admin' && view !== 'dashboard' && <WhatsAppButton />}
-    </>
+    </div>
   );
 }
 

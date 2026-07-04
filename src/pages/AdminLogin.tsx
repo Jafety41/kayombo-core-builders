@@ -1,35 +1,29 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Building2, Lock, User, ArrowLeft } from 'lucide-react';
 import { motion } from 'motion/react';
 import { supabase } from '../lib/supabase';
 
 export default function AdminLogin({ onBack, onLogin }: { onBack: () => void; onLogin: () => void }) {
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const [validPassword, setValidPassword] = useState('KAYOMBO123%');
+  const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    // Fetch latest password from DB
-    const fetchPassword = async () => {
-      const { data, error } = await supabase
-        .from('admin_settings')
-        .select('value')
-        .eq('key', 'admin_password')
-        .single();
-      
-      if (data) {
-        setValidPassword(data.value);
-      }
-    };
-    fetchPassword();
-  }, []);
-
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (password === validPassword) {
-      onLogin();
+    setIsLoading(true);
+    setError('');
+    
+    const { error: signInError } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (signInError) {
+      setError(signInError.message || 'Invalid admin credentials. Please try again.');
+      setIsLoading(false);
     } else {
-      setError('Invalid admin password. Please try again.');
+      onLogin();
     }
   };
 
@@ -44,7 +38,7 @@ export default function AdminLogin({ onBack, onLogin }: { onBack: () => void; on
         </button>
         
         <div className="flex justify-center mb-4 md:mb-6">
-          <img src="/images/logo.jpg" alt="Kayombo Core Builders Company" className="h-16 w-auto object-contain" />
+          <img src="/images/logo-optimized.webp" alt="Kayombo Core Builders Company" className="h-16 w-auto object-contain" />
         </div>
         
         <h2 className="text-center text-2xl md:text-3xl font-extrabold tracking-tighter text-gray-900">
@@ -62,6 +56,29 @@ export default function AdminLogin({ onBack, onLogin }: { onBack: () => void; on
       >
         <div className="bg-white p-6 md:p-12 shadow-2xl border border-gray-100 rounded-[32px] md:rounded-[40px]">
           <form className="space-y-5 md:space-y-6" onSubmit={handleSubmit}>
+            <div>
+              <label htmlFor="email" className="block text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400 mb-3">
+                Admin Email
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                  <User className="h-5 w-5 text-gray-400" />
+                </div>
+                <input
+                  id="email"
+                  type="email"
+                  required
+                  className="block w-full pl-11 pr-4 py-4 md:py-4.5 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-900/10 focus:border-blue-900 transition-all text-gray-900 placeholder-gray-400 text-sm md:text-base"
+                  placeholder="admin@example.com"
+                  value={email}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                    setError('');
+                  }}
+                />
+              </div>
+            </div>
+
             <div>
               <label htmlFor="password" className="block text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400 mb-3">
                 Admin Password
@@ -96,9 +113,10 @@ export default function AdminLogin({ onBack, onLogin }: { onBack: () => void; on
 
             <button
               type="submit"
-              className="w-full flex justify-center py-4 md:py-5 px-4 border border-transparent rounded-full shadow-xl shadow-blue-900/10 text-xs md:text-sm font-bold uppercase tracking-[0.2em] text-white bg-blue-900 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-900/10 transition-all active:scale-[0.98]"
+              disabled={isLoading}
+              className="w-full flex justify-center py-4 md:py-5 px-4 border border-transparent rounded-full shadow-xl shadow-blue-900/10 text-xs md:text-sm font-bold uppercase tracking-[0.2em] text-white bg-blue-900 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-900/10 transition-all active:scale-[0.98] disabled:opacity-70"
             >
-              Sign In to Dashboard
+              {isLoading ? 'Signing In...' : 'Sign In to Dashboard'}
             </button>
           </form>
         </div>

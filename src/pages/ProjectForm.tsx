@@ -1,3 +1,4 @@
+import { InteractiveButton } from "../components/InteractiveButton";
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { toast } from 'sonner';
@@ -60,7 +61,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ onBack }) => {
           >
             <ArrowLeft className="w-4 h-4" /> Back to Home
           </button>
-          <img src="/images/logo.jpg" alt="KCBC Logo" className="h-10 w-auto object-contain" />
+          <img src="/images/logo-optimized.webp" alt="KCBC Logo" className="h-10 w-auto object-contain" />
           <div className="w-24 hidden sm:block" />
         </div>
       </header>
@@ -168,14 +169,14 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ onBack }) => {
                     />
                   </div>
 
-                  <button 
+                  <InteractiveButton magnetic={false}
                     type="submit"
                     disabled={isSubmitting}
                     className="w-full rounded-full py-5 bg-blue-900 hover:bg-blue-800 text-white font-bold shadow-xl shadow-blue-900/20 transition-all flex items-center justify-center gap-3 disabled:opacity-50 active:scale-95"
                   >
                     {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5" />}
                     {isSubmitting ? 'Submitting Application...' : 'Submit Application'}
-                  </button>
+                  </InteractiveButton>
                 </form>
               </motion.div>
             ) : (
@@ -193,12 +194,12 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ onBack }) => {
                   Thank you for choosing KCBC Ltd. Your project application has been sent to our admin panel. 
                   Our team will contact you shortly to discuss the next steps.
                 </p>
-                <button 
+                <InteractiveButton magnetic={false}
                   onClick={onBack}
                   className="rounded-full px-10 py-5 bg-blue-900 text-white font-bold shadow-lg transition-all hover:-translate-y-1 active:scale-95"
                 >
                   Return to Home
-                </button>
+                </InteractiveButton>
               </motion.div>
             )}
           </AnimatePresence>

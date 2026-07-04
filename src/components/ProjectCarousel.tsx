@@ -2,75 +2,106 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { MapPin, ArrowRight } from 'lucide-react';
 import { View } from '../App';
+import { supabase } from '../lib/supabase';
 
 interface Project {
-  id: number;
+  id: string | number;
   title: string;
   category: string;
   location: string;
-  image: string;
+  image_url: string;
 }
-
-const projects: Project[] = [
-  {
-    id: 1,
-    title: "Temeke Drainage Infrastructure",
-    category: "Civil Works",
-    location: "Temeke, Dar es Salaam",
-    image: "/images/WhatsApp Image 2026-07-03 at 14.41.47.jpeg"
-  },
-  {
-    id: 2,
-    title: "Kijichi Foundation Beams",
-    category: "Foundations",
-    location: "Kijichi, Dar es Salaam",
-    image: "/images/WhatsApp Image 2026-07-03 at 14.41.49.jpeg"
-  },
-  {
-    id: 3,
-    title: "Structural Site Reinforcement",
-    category: "Structural",
-    location: "Dar es Salaam",
-    image: "/images/WhatsApp Image 2026-07-03 at 14.41.50 (1).jpeg"
-  },
-  {
-    id: 4,
-    title: "Mwananyamala Groundwork",
-    category: "Civil Works",
-    location: "Mwananyamala, Dar es Salaam",
-    image: "/images/WhatsApp Image 2026-07-03 at 14.41.50 (2).jpeg"
-  },
-  {
-    id: 5,
-    title: "Industrial Facility Foundation",
-    category: "Infrastructure",
-    location: "Kigamboni, Dar es Salaam",
-    image: "/images/WhatsApp Image 2026-07-03 at 14.41.50 (3).jpeg"
-  },
-  {
-    id: 6,
-    title: "Heavy Equipment Logistics",
-    category: "Logistics",
-    location: "Dar es Salaam",
-    image: "/images/WhatsApp Image 2026-07-03 at 14.41.51 (1).jpeg"
-  },
-  {
-    id: 7,
-    title: "Main Culvert Reinforcement",
-    category: "Civil Works",
-    location: "Kigamboni, Dar es Salaam",
-    image: "/images/WhatsApp Image 2026-07-03 at 14.41.51 (3).jpeg"
-  }
-];
 
 interface ProjectCarouselProps {
   onNavigate?: (view: View) => void;
 }
 
+const fallbackProjects: Project[] = [
+  {
+    id: 'fallback-1',
+    title: "Temeke Drainage Infrastructure",
+    category: "Civil Works",
+    location: "Temeke, Dar es Salaam",
+    image_url: "/images/WhatsApp Image 2026-07-03 at 14.41.47.jpeg"
+  },
+  {
+    id: 'fallback-2',
+    title: "Kijichi Foundation Beams",
+    category: "Foundations",
+    location: "Kijichi, Dar es Salaam",
+    image_url: "/images/WhatsApp Image 2026-07-03 at 14.41.49.jpeg"
+  },
+  {
+    id: 'fallback-3',
+    title: "Structural Site Reinforcement",
+    category: "Structural",
+    location: "Dar es Salaam",
+    image_url: "/images/WhatsApp Image 2026-07-03 at 14.41.50 (1).jpeg"
+  },
+  {
+    id: 'fallback-4',
+    title: "Mwananyamala Groundwork",
+    category: "Civil Works",
+    location: "Mwananyamala, Dar es Salaam",
+    image_url: "/images/WhatsApp Image 2026-07-03 at 14.41.50 (2).jpeg"
+  },
+  {
+    id: 'fallback-5',
+    title: "Industrial Facility Foundation",
+    category: "Infrastructure",
+    location: "Kigamboni, Dar es Salaam",
+    image_url: "/images/WhatsApp Image 2026-07-03 at 14.41.50 (3).jpeg"
+  },
+  {
+    id: 'fallback-6',
+    title: "Heavy Equipment Logistics",
+    category: "Logistics",
+    location: "Dar es Salaam",
+    image_url: "/images/WhatsApp Image 2026-07-03 at 14.41.51 (1).jpeg"
+  },
+  {
+    id: 'fallback-7',
+    title: "Main Culvert Reinforcement",
+    category: "Civil Works",
+    location: "Kigamboni, Dar es Salaam",
+    image_url: "/images/WhatsApp Image 2026-07-03 at 14.41.51 (3).jpeg"
+  }
+];
+
 export const ProjectCarousel: React.FC<ProjectCarouselProps> = ({ onNavigate }) => {
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
   const [direction, setDirection] = useState(0);
+
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('projects')
+          .select('*')
+          .order('created_at', { ascending: false });
+
+        if (error) {
+          throw error;
+        }
+
+        if (data && data.length > 0) {
+          setProjects(data);
+        } else {
+          setProjects(fallbackProjects);
+        }
+      } catch (error) {
+        console.error('Error fetching projects:', error);
+        setProjects(fallbackProjects);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchProjects();
+  }, []);
 
   const handleDetailsClick = () => {
     if (onNavigate) {
@@ -79,24 +110,26 @@ export const ProjectCarousel: React.FC<ProjectCarouselProps> = ({ onNavigate }) 
   };
 
   const nextProject = useCallback(() => {
+    if (projects.length === 0) return;
     setDirection(1);
     setCurrentIndex((prev) => (prev + 1) % projects.length);
-  }, []);
+  }, [projects.length]);
 
   const prevProject = useCallback(() => {
+    if (projects.length === 0) return;
     setDirection(-1);
     setCurrentIndex((prev) => (prev - 1 + projects.length) % projects.length);
-  }, []);
+  }, [projects.length]);
 
   useEffect(() => {
-    if (!isAutoPlaying) return;
+    if (!isAutoPlaying || projects.length === 0) return;
 
     const interval = setInterval(() => {
       nextProject();
     }, 3000);
 
     return () => clearInterval(interval);
-  }, [isAutoPlaying, nextProject]);
+  }, [isAutoPlaying, nextProject, projects.length]);
 
   // Framer Motion variants for the carousel animation
   const variants = {
@@ -115,6 +148,40 @@ export const ProjectCarousel: React.FC<ProjectCarouselProps> = ({ onNavigate }) 
       opacity: 0
     })
   };
+
+  if (isLoading) {
+    return (
+      <div className="w-full">
+        {/* Mobile Loading Skeleton */}
+        <div className="block md:hidden h-[450px] w-full px-4">
+          <div className="bg-gray-100 rounded-2xl h-full w-full animate-pulse flex flex-col">
+            <div className="h-64 w-full bg-gray-200 rounded-t-2xl"></div>
+            <div className="p-6 flex-1 flex flex-col gap-4">
+              <div className="h-3 bg-gray-200 rounded w-1/4"></div>
+              <div className="h-6 bg-gray-200 rounded w-3/4"></div>
+              <div className="mt-auto h-12 bg-gray-200 rounded-xl w-full"></div>
+            </div>
+          </div>
+        </div>
+        
+        {/* Desktop Loading Skeleton Grid */}
+        <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="bg-gray-100 rounded-2xl h-[450px] border border-gray-50 flex flex-col animate-pulse">
+              <div className="h-64 w-full bg-gray-200 rounded-t-2xl"></div>
+              <div className="p-6 flex-1 flex flex-col gap-4">
+                <div className="h-3 bg-gray-200 rounded w-1/4"></div>
+                <div className="h-6 bg-gray-200 rounded w-3/4"></div>
+                <div className="mt-auto flex items-center gap-2">
+                  <div className="h-4 bg-gray-200 rounded w-1/3"></div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full">
@@ -153,7 +220,7 @@ export const ProjectCarousel: React.FC<ProjectCarouselProps> = ({ onNavigate }) 
             <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden flex flex-col h-full">
               <div className="relative h-64 w-full overflow-hidden">
                 <img 
-                  src={projects[currentIndex].image} 
+                  src={projects[currentIndex].image_url} 
                   alt={projects[currentIndex].title}
                   className="w-full h-full object-cover"
                   loading="lazy"
@@ -219,16 +286,31 @@ export const ProjectCarousel: React.FC<ProjectCarouselProps> = ({ onNavigate }) 
             className="group bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden flex flex-col"
           >
             <div className="relative h-64 w-full overflow-hidden">
-              <img 
-                src={project.image} 
-                alt={project.title}
-                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                loading="lazy"
-                decoding="async"
-                width={600}
-                height={400}
+              <motion.div
+                className="absolute inset-0 bg-blue-900 z-10 origin-right"
+                initial={{ scaleX: 1 }}
+                whileInView={{ scaleX: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: i * 0.1 + 0.2, ease: "easeInOut" }}
               />
-              <div className="absolute top-4 left-4">
+              <motion.div
+                className="w-full h-full"
+                initial={{ opacity: 0, scale: 1.1 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: i * 0.1 + 0.2, ease: "easeOut" }}
+              >
+                <img 
+                  src={project.image_url} 
+                  alt={project.title}
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  loading="lazy"
+                  decoding="async"
+                  width={600}
+                  height={400}
+                />
+              </motion.div>
+              <div className="absolute top-4 left-4 z-20">
                 <span className="px-3 py-1 bg-white/90 backdrop-blur-sm text-blue-900 text-[10px] font-bold uppercase tracking-widest rounded-lg shadow-sm">
                   {project.category}
                 </span>

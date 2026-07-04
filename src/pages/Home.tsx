@@ -18,11 +18,12 @@ import {
   X,
   Quote
 } from 'lucide-react';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion, AnimatePresence, useScroll, useTransform } from 'motion/react';
 import { toast } from 'sonner';
 import { Project } from '../types';
 import { supabase } from '../lib/supabase';
 import { ProjectCarousel } from '../components/ProjectCarousel';
+import { InteractiveButton } from '../components/InteractiveButton';
 import { View } from '../App';
 
 interface HomeProps {
@@ -32,54 +33,68 @@ interface HomeProps {
 }
 
 // Components
-const Hero = ({ onNavigate }: { onNavigate: (view: View, sectionId?: string) => void }) => (
-  <section className="relative min-h-[60vh] md:min-h-[80vh] flex items-center justify-center overflow-hidden text-center px-4 sm:px-6 lg:px-12">
-    <div className="max-w-5xl mx-auto relative z-10 py-12 md:py-20">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="bg-transparent"
-      >
-        <div className="flex justify-center mb-6 md:mb-8 bg-transparent p-0 rounded-none shadow-none">
-          <img 
-            src="/images/logo.jpg" 
-            alt="Kayombo Core Builders Company" 
-            className="h-20 md:h-32 w-auto object-contain bg-transparent mix-blend-multiply"
-            fetchPriority="high"
-            width={256}
-            height={128}
-          />
-        </div>
-        <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-extrabold tracking-tight text-gray-900 mb-6 md:mb-8 leading-[1.1]">
-          Build Your Future. <br className="hidden sm:block" />
-          <span className="text-blue-900">Solid Foundations.</span>
-        </h1>
-        <p className="text-sm sm:text-lg md:text-xl lg:text-2xl text-gray-500 mb-8 md:mb-12 leading-relaxed max-w-3xl mx-auto font-medium px-4">
-          Expert civil engineering and infrastructure development based in Dar es Salaam. 
-          Engineering stability for Tanzania's growth.
-        </p>
-        <div className="flex flex-row items-center justify-center gap-3 sm:gap-4 px-2 sm:px-0">
-          <button 
-            onClick={() => onNavigate('project-form')}
-            className="flex-1 sm:flex-none rounded-full px-4 sm:px-10 py-4 sm:py-5 bg-blue-900 hover:bg-blue-800 text-white font-bold shadow-xl shadow-blue-900/20 transition-all hover:-translate-y-1 active:scale-95 text-[10px] sm:text-sm md:text-base whitespace-nowrap"
+const Hero = ({ onNavigate }: { onNavigate: (view: View, sectionId?: string) => void }) => {
+  const { scrollY } = useScroll();
+  const y = useTransform(scrollY, [0, 300], [0, -40]);
+  const opacity = useTransform(scrollY, [0, 300], [1, 0.4]);
+
+  return (
+    <section className="relative min-h-[60vh] md:min-h-[80vh] flex items-center justify-center overflow-hidden text-center px-4 sm:px-6 lg:px-12">
+      {/* Blueprint Grid Pattern */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(59,130,246,0.05)_1px,transparent_1px),linear-gradient(to_bottom,rgba(59,130,246,0.05)_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none hidden md:block" />
+      
+      {/* Decorative Glow Orb */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[30rem] md:w-[40rem] h-[30rem] md:h-[40rem] bg-blue-900/5 blur-3xl rounded-full pointer-events-none" />
+
+      <div className="max-w-5xl mx-auto relative z-10 py-12 md:py-20">
+        <motion.div style={{ y, opacity }}>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="bg-transparent"
           >
-            Start Your Project
-          </button>
-          <button 
-            onClick={() => onNavigate('portfolio')}
-            className="flex-1 sm:flex-none rounded-full px-4 sm:px-10 py-4 sm:py-5 bg-white border border-gray-200 text-gray-700 font-bold hover:bg-gray-50 transition-all shadow-sm active:scale-95 text-[10px] sm:text-sm md:text-base whitespace-nowrap"
-          >
-            View Our Portfolio
-          </button>
-        </div>
-      </motion.div>
-    </div>
-  </section>
-);
+            <div className="flex justify-center mb-6 md:mb-8 bg-transparent p-0 rounded-none shadow-none">
+              <img 
+                src="/images/logo-optimized.webp" 
+                alt="Kayombo Core Builders Company" 
+                className="h-20 md:h-32 w-auto object-contain bg-transparent mix-blend-multiply"
+                fetchPriority="high"
+                width={256}
+                height={128}
+              />
+            </div>
+            <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-extrabold tracking-tight text-gray-900 mb-6 md:mb-8 leading-[1.1]">
+              Build Your Future. <br className="hidden sm:block" />
+              <span className="text-blue-900">Solid Foundations.</span>
+            </h1>
+            <p className="text-sm sm:text-lg md:text-xl lg:text-2xl text-gray-500 mb-8 md:mb-12 leading-relaxed max-w-3xl mx-auto font-medium px-4">
+              Expert civil engineering and infrastructure development based in Dar es Salaam. 
+              Engineering stability for Tanzania's growth.
+            </p>
+            <div className="flex flex-row items-center justify-center gap-3 sm:gap-4 px-2 sm:px-0">
+              <InteractiveButton 
+                onClick={() => onNavigate('project-form')}
+                className="flex-1 sm:flex-none rounded-full px-4 sm:px-10 py-4 sm:py-5 bg-blue-900 hover:bg-blue-800 text-white font-bold shadow-xl shadow-blue-900/20 transition-all active:scale-95 text-[10px] sm:text-sm md:text-base whitespace-nowrap"
+              >
+                Start Your Project
+              </InteractiveButton>
+              <InteractiveButton 
+                onClick={() => onNavigate('portfolio')}
+                className="flex-1 sm:flex-none rounded-full px-4 sm:px-10 py-4 sm:py-5 bg-white border border-gray-200 text-gray-700 font-bold hover:bg-gray-50 transition-all shadow-sm active:scale-95 text-[10px] sm:text-sm md:text-base whitespace-nowrap"
+              >
+                View Our Portfolio
+              </InteractiveButton>
+            </div>
+          </motion.div>
+        </motion.div>
+      </div>
+    </section>
+  );
+};
 
 const CEOMessage = () => (
-  <section id="about" className="py-8 md:py-24 bg-gray-50/50 scroll-mt-20">
+  <section id="about" className="py-5 md:py-24 bg-gray-50/50 scroll-mt-20">
     <div className="max-w-4xl mx-auto px-4">
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
@@ -90,7 +105,7 @@ const CEOMessage = () => (
         <div className="flex flex-col items-center text-center space-y-4 md:flex-row md:items-start md:text-left md:space-x-8 md:space-y-0">
           <div className="flex-shrink-0 w-24 h-24 md:w-32 md:h-32 rounded-xl overflow-hidden border border-gray-100 shadow-inner">
             <img 
-              src="/images/ceo-image.png" 
+              src="/images/ceo-image-optimized.webp" 
               alt="Eng. Kayombo - Founder & CEO" 
               width={128}
               height={128}
@@ -128,6 +143,27 @@ const CEOMessage = () => (
 
 const Services = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
+  const isInteracting = useRef(false);
+  const interactionTimeout = useRef<ReturnType<typeof setTimeout>>();
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  const handleInteraction = () => {
+    isInteracting.current = true;
+    if (interactionTimeout.current) clearTimeout(interactionTimeout.current);
+    interactionTimeout.current = setTimeout(() => {
+      isInteracting.current = false;
+    }, 4000);
+  };
+
+  const handleScroll = () => {
+    handleInteraction();
+    if (scrollRef.current) {
+      const itemWidth = scrollRef.current.offsetWidth - 32 + 16;
+      const index = Math.round(scrollRef.current.scrollLeft / itemWidth);
+      setCurrentIndex(index);
+    }
+  };
+
   const services = [
     {
       title: "Civil Engineering",
@@ -150,34 +186,52 @@ const Services = () => {
     const scrollContainer = scrollRef.current;
     if (!scrollContainer) return;
 
-    let scrollIndex = 0;
     const interval = setInterval(() => {
-      if (!scrollContainer) return;
-      scrollIndex = (scrollIndex + 1) % services.length;
-      const scrollAmount = scrollIndex * (scrollContainer.offsetWidth - 32 + 16); // Width + gap
+      if (!scrollContainer || isInteracting.current) return;
+      const itemWidth = scrollContainer.offsetWidth - 32 + 16; // Width + gap
+      const currentIndex = Math.round(scrollContainer.scrollLeft / itemWidth);
+      const nextIndex = (currentIndex + 1) % services.length;
+      
       scrollContainer.scrollTo({
-        left: scrollAmount,
+        left: nextIndex * itemWidth,
         behavior: 'smooth'
       });
     }, 3000);
 
-    return () => clearInterval(interval);
+    return () => {
+      clearInterval(interval);
+      if (interactionTimeout.current) clearTimeout(interactionTimeout.current);
+    };
   }, [services.length]);
 
   return (
-    <section id="services" className="py-8 md:py-24 lg:py-32 bg-gray-50/50 scroll-mt-20">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12">
-        <div className="text-center mb-8 md:mb-24 px-4">
+    <section id="services" className="relative py-5 md:py-24 lg:py-32 bg-gray-50/50 scroll-mt-20 overflow-hidden">
+      {/* Blueprint Grid Pattern */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(59,130,246,0.05)_1px,transparent_1px),linear-gradient(to_bottom,rgba(59,130,246,0.05)_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none hidden md:block" />
+      
+      {/* Decorative Glow Orb */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[30rem] md:w-[40rem] h-[30rem] md:h-[40rem] bg-blue-900/5 blur-3xl rounded-full pointer-events-none" />
+      
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 relative z-10">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center mb-6 md:mb-24 px-4"
+        >
           <span className="inline-block py-1.5 px-4 mb-4 rounded-full bg-blue-50 text-blue-900 text-[10px] font-bold uppercase tracking-[0.2em]">
             Expertise
           </span>
           <h2 className="text-2xl md:text-5xl font-extrabold tracking-tight text-gray-900 mb-4 md:mb-6">Our Core Services</h2>
           <p className="text-sm md:text-lg text-gray-500 max-w-2xl mx-auto leading-relaxed font-medium">Delivering excellence through specialized expertise in the Tanzanian construction landscape.</p>
-        </div>
+        </motion.div>
         
         {/* Mobile: Horizontal Swiping | Desktop: Grid */}
         <div 
           ref={scrollRef}
+          onTouchStart={handleInteraction}
+          onScroll={handleScroll}
+          onMouseEnter={handleInteraction}
           className="flex md:grid md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-10 overflow-x-auto md:overflow-x-visible pb-8 md:pb-0 snap-x snap-mandatory scrollbar-hide px-4 md:px-0 -mx-4 md:mx-0"
         >
           {services.map((service, i) => (
@@ -202,15 +256,37 @@ const Services = () => {
           ))}
         </div>
 
-        {/* Mobile Swipe Hint */}
-        <div className="flex md:hidden items-center justify-center gap-2 mt-6 text-gray-400 font-bold text-[10px] uppercase tracking-[0.2em]">
-          Swipe to explore services
-          <motion.div
-            animate={{ x: [0, 5, 0] }}
-            transition={{ duration: 1.5, repeat: Infinity }}
-          >
-            <ArrowRight className="w-3 h-3" />
-          </motion.div>
+        {/* Mobile Swipe Hint & Indicators */}
+        <div className="flex md:hidden flex-col items-center justify-center mt-6">
+          <div className="flex gap-2 mb-4">
+            {services.map((_, idx) => (
+              <button
+                key={idx}
+                onClick={() => {
+                  if (scrollRef.current) {
+                    const itemWidth = scrollRef.current.offsetWidth - 32 + 16;
+                    scrollRef.current.scrollTo({
+                      left: idx * itemWidth,
+                      behavior: 'smooth'
+                    });
+                  }
+                }}
+                className={`w-2 h-2 rounded-full transition-all ${
+                  idx === currentIndex ? 'bg-blue-900 w-4' : 'bg-gray-300'
+                }`}
+                aria-label={`Go to slide ${idx + 1}`}
+              />
+            ))}
+          </div>
+          <div className="flex items-center gap-2 text-gray-400 font-bold text-[10px] uppercase tracking-[0.2em]">
+            Swipe to explore services
+            <motion.div
+              animate={{ x: [0, 5, 0] }}
+              transition={{ duration: 1.5, repeat: Infinity }}
+            >
+              <ArrowRight className="w-3 h-3" />
+            </motion.div>
+          </div>
         </div>
       </div>
     </section>
@@ -219,9 +295,14 @@ const Services = () => {
 
 const Projects = ({ onNavigate }: { onNavigate: (view: View) => void }) => {
   return (
-    <section id="projects" className="py-8 md:py-24 bg-white scroll-mt-20">
+    <section id="projects" className="py-5 md:py-24 bg-white scroll-mt-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12">
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 md:mb-16 gap-6 px-4 md:px-0">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="flex flex-col md:flex-row md:items-end justify-between mb-6 md:mb-16 gap-6 px-4 md:px-0"
+        >
           <div className="max-w-2xl text-center md:text-left">
             <h2 className="text-2xl md:text-5xl font-extrabold tracking-tight text-gray-900 mb-4">Featured Projects</h2>
             <p className="text-sm md:text-lg text-gray-500 font-medium">A track record of stability and excellence in high-standard civil engineering across the city.</p>
@@ -232,7 +313,7 @@ const Projects = ({ onNavigate }: { onNavigate: (view: View) => void }) => {
           >
             View All Work <ArrowRight className="w-4 h-4" />
           </button>
-        </div>
+        </motion.div>
 
         <ProjectCarousel onNavigate={onNavigate} />
       </div>
@@ -242,6 +323,27 @@ const Projects = ({ onNavigate }: { onNavigate: (view: View) => void }) => {
 
 const SuccessStories = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
+  const isInteracting = useRef(false);
+  const interactionTimeout = useRef<ReturnType<typeof setTimeout>>();
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  const handleInteraction = () => {
+    isInteracting.current = true;
+    if (interactionTimeout.current) clearTimeout(interactionTimeout.current);
+    interactionTimeout.current = setTimeout(() => {
+      isInteracting.current = false;
+    }, 4000);
+  };
+
+  const handleScroll = () => {
+    handleInteraction();
+    if (scrollRef.current) {
+      const itemWidth = scrollRef.current.offsetWidth - 32 + 16;
+      const index = Math.round(scrollRef.current.scrollLeft / itemWidth);
+      setCurrentIndex(index);
+    }
+  };
+
   const testimonials = [
     {
       name: "Eng. Mwandamizi",
@@ -267,34 +369,46 @@ const SuccessStories = () => {
     const scrollContainer = scrollRef.current;
     if (!scrollContainer) return;
 
-    let scrollIndex = 0;
     const interval = setInterval(() => {
-      if (!scrollContainer) return;
-      scrollIndex = (scrollIndex + 1) % testimonials.length;
-      const scrollAmount = scrollIndex * (scrollContainer.offsetWidth - 32 + 16);
+      if (!scrollContainer || isInteracting.current) return;
+      const itemWidth = scrollContainer.offsetWidth - 32 + 16;
+      const currentIndex = Math.round(scrollContainer.scrollLeft / itemWidth);
+      const nextIndex = (currentIndex + 1) % testimonials.length;
+      
       scrollContainer.scrollTo({
-        left: scrollAmount,
+        left: nextIndex * itemWidth,
         behavior: 'smooth'
       });
     }, 3000);
 
-    return () => clearInterval(interval);
+    return () => {
+      clearInterval(interval);
+      if (interactionTimeout.current) clearTimeout(interactionTimeout.current);
+    };
   }, [testimonials.length]);
 
   return (
-    <section className="py-8 md:py-24 bg-gray-50/50 overflow-hidden">
+    <section className="py-5 md:py-24 bg-gray-50/50 overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12">
-        <div className="text-center mb-8 md:mb-16 px-4">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center mb-6 md:mb-16 px-4"
+        >
           <span className="inline-block py-1.5 px-4 mb-4 rounded-full bg-blue-50 text-blue-900 text-[10px] font-bold uppercase tracking-[0.2em]">
             Testimonials
           </span>
           <h2 className="text-2xl md:text-5xl font-extrabold tracking-tight text-gray-900 mb-4">Client Success Stories</h2>
           <p className="text-sm md:text-lg text-gray-500 max-w-2xl mx-auto font-medium">Hear from the partners and stakeholders we've worked with on major city projects.</p>
-        </div>
+        </motion.div>
 
         {/* Mobile: Horizontal Swiping | Desktop: Grid */}
         <div 
           ref={scrollRef}
+          onTouchStart={handleInteraction}
+          onScroll={handleScroll}
+          onMouseEnter={handleInteraction}
           className="flex md:grid md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8 overflow-x-auto md:overflow-x-visible pb-8 md:pb-0 snap-x snap-mandatory scrollbar-hide px-4 md:px-0 -mx-4 md:mx-0"
         >
           {testimonials.map((t, i) => (
@@ -325,15 +439,37 @@ const SuccessStories = () => {
           ))}
         </div>
 
-        {/* Mobile Swipe Hint */}
-        <div className="flex md:hidden items-center justify-center gap-2 mt-6 text-gray-400 font-bold text-[10px] uppercase tracking-[0.2em]">
-          Swipe to read more
-          <motion.div
-            animate={{ x: [0, 5, 0] }}
-            transition={{ duration: 1.5, repeat: Infinity }}
-          >
-            <ArrowRight className="w-3 h-3" />
-          </motion.div>
+        {/* Mobile Swipe Hint & Indicators */}
+        <div className="flex md:hidden flex-col items-center justify-center mt-6">
+          <div className="flex gap-2 mb-4">
+            {testimonials.map((_, idx) => (
+              <button
+                key={idx}
+                onClick={() => {
+                  if (scrollRef.current) {
+                    const itemWidth = scrollRef.current.offsetWidth - 32 + 16;
+                    scrollRef.current.scrollTo({
+                      left: idx * itemWidth,
+                      behavior: 'smooth'
+                    });
+                  }
+                }}
+                className={`w-2 h-2 rounded-full transition-all ${
+                  idx === currentIndex ? 'bg-blue-900 w-4' : 'bg-gray-300'
+                }`}
+                aria-label={`Go to slide ${idx + 1}`}
+              />
+            ))}
+          </div>
+          <div className="flex items-center gap-2 text-gray-400 font-bold text-[10px] uppercase tracking-[0.2em]">
+            Swipe to read more
+            <motion.div
+              animate={{ x: [0, 5, 0] }}
+              transition={{ duration: 1.5, repeat: Infinity }}
+            >
+              <ArrowRight className="w-3 h-3" />
+            </motion.div>
+          </div>
         </div>
       </div>
     </section>
@@ -370,8 +506,13 @@ const FAQ = () => {
   ];
 
   return (
-    <section className="py-6 md:py-24 bg-white">
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="py-5 md:py-24 bg-white">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8"
+      >
         <h2 className="text-2xl md:text-5xl font-extrabold tracking-tight text-gray-900 mb-6 md:mb-10 text-center">Frequently Asked Questions</h2>
         <div className="space-y-2 md:space-y-4">
           {faqs.map((faq, i) => (
@@ -381,7 +522,12 @@ const FAQ = () => {
                 className="w-full flex items-center justify-between p-4 md:p-6 text-left hover:bg-gray-50 transition-colors"
               >
                 <span className="font-semibold text-gray-900 text-sm md:text-base">{faq.q}</span>
-                {openIndex === i ? <ChevronUp className="w-4 h-4 md:w-5 md:h-5 text-gray-400 shrink-0 ml-2" /> : <ChevronDown className="w-4 h-4 md:w-5 md:h-5 text-gray-400 shrink-0 ml-2" />}
+                <motion.div
+                  animate={{ rotate: openIndex === i ? 180 : 0 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <ChevronDown className="w-4 h-4 md:w-5 md:h-5 text-gray-400 shrink-0 ml-2" />
+                </motion.div>
               </button>
               <AnimatePresence>
                 {openIndex === i && (
@@ -399,16 +545,21 @@ const FAQ = () => {
             </div>
           ))}
         </div>
-      </div>
+      </motion.div>
     </section>
   );
 };
 
 const OfficeLocation = () => (
-  <section className="py-8 md:py-24 bg-white">
+  <section className="py-5 md:py-24 bg-white">
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 lg:gap-20 items-center">
-        <div className="order-1 lg:order-1">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="order-1 lg:order-1"
+        >
           <span className="inline-block py-1.5 px-4 mb-4 rounded-full bg-blue-50 text-blue-900 text-[10px] font-bold uppercase tracking-[0.2em]">
             Our Headquarters
           </span>
@@ -453,9 +604,14 @@ const OfficeLocation = () => (
           >
             Get Directions <ArrowRight className="w-4 h-4" />
           </a>
-        </div>
+        </motion.div>
 
-        <div className="order-2 lg:order-2 relative group">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="order-2 lg:order-2 relative group"
+        >
           <div className="aspect-square rounded-[40px] overflow-hidden border border-gray-100 shadow-2xl relative">
             {/* Real Google Maps Embed */}
             <iframe 
@@ -486,7 +642,7 @@ const OfficeLocation = () => (
           
           {/* Decorative Back Elements */}
           <div className="absolute -z-10 top-10 -right-10 w-full h-full bg-blue-900/5 rounded-[40px] blur-3xl group-hover:bg-blue-900/10 transition-colors" />
-        </div>
+        </motion.div>
       </div>
     </div>
   </section>
@@ -494,9 +650,29 @@ const OfficeLocation = () => (
 
 const Contact = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
+  const isInteracting = useRef(false);
+  const interactionTimeout = useRef<ReturnType<typeof setTimeout>>();
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [formData, setFormData] = useState({ name: '', phone: '', details: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+
+  const handleInteraction = () => {
+    isInteracting.current = true;
+    if (interactionTimeout.current) clearTimeout(interactionTimeout.current);
+    interactionTimeout.current = setTimeout(() => {
+      isInteracting.current = false;
+    }, 4000);
+  };
+
+  const handleScroll = () => {
+    handleInteraction();
+    if (scrollRef.current) {
+      const itemWidth = scrollRef.current.offsetWidth - 32 + 16;
+      const index = Math.round(scrollRef.current.scrollLeft / itemWidth);
+      setCurrentIndex(index);
+    }
+  };
 
   const contacts = [
     {
@@ -523,18 +699,22 @@ const Contact = () => {
     const scrollContainer = scrollRef.current;
     if (!scrollContainer) return;
 
-    let scrollIndex = 0;
     const interval = setInterval(() => {
-      if (!scrollContainer) return;
-      scrollIndex = (scrollIndex + 1) % contacts.length;
-      const scrollAmount = scrollIndex * (scrollContainer.offsetWidth - 32 + 16);
+      if (!scrollContainer || isInteracting.current) return;
+      const itemWidth = scrollContainer.offsetWidth - 32 + 16;
+      const currentIndex = Math.round(scrollContainer.scrollLeft / itemWidth);
+      const nextIndex = (currentIndex + 1) % contacts.length;
+      
       scrollContainer.scrollTo({
-        left: scrollAmount,
+        left: nextIndex * itemWidth,
         behavior: 'smooth'
       });
     }, 3000);
 
-    return () => clearInterval(interval);
+    return () => {
+      clearInterval(interval);
+      if (interactionTimeout.current) clearTimeout(interactionTimeout.current);
+    };
   }, [contacts.length]);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -545,7 +725,11 @@ const Contact = () => {
       const { error } = await supabase.from('messages').insert([formData]);
       if (error) throw error;
       toast.success('Message sent successfully! Our team will get back to you shortly.');
-      setFormData({ name: '', phone: '', details: '' });
+      setSubmitted(true);
+      setTimeout(() => {
+        setSubmitted(false);
+        setFormData({ name: '', phone: '', details: '' });
+      }, 1500);
     } catch (err) {
       console.error('Error saving message:', err);
       toast.error('Could not send message. Please check your connection and try again.');
@@ -555,19 +739,30 @@ const Contact = () => {
   };
 
   return (
-    <section id="contact" className="py-8 md:py-24 lg:py-32 bg-gray-50/50 overflow-hidden scroll-mt-20">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12">
-        <div className="text-center mb-8 md:mb-16">
+    <section id="contact" className="relative py-5 md:py-24 lg:py-32 bg-gray-50/50 overflow-hidden scroll-mt-20">
+      {/* Decorative Glow Orb */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[30rem] md:w-[40rem] h-[30rem] md:h-[40rem] bg-blue-900/5 blur-3xl rounded-full pointer-events-none" />
+      
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 relative z-10">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center mb-6 md:mb-16"
+        >
           <span className="inline-block py-1.5 px-4 mb-4 rounded-full bg-blue-50 text-blue-900 text-[10px] font-bold uppercase tracking-[0.2em]">
             Get In Touch
           </span>
           <h2 className="text-2xl md:text-5xl font-extrabold tracking-tight text-gray-900 mb-4">Contact Our Team</h2>
           <p className="text-sm md:text-lg text-gray-500 max-w-2xl mx-auto leading-relaxed font-medium">Real people, every time. Get in touch with our engineers today.</p>
-        </div>
+        </motion.div>
         
         {/* Contact Cards: Mobile Horizontal Swipe | Desktop Grid */}
         <div 
           ref={scrollRef}
+          onTouchStart={handleInteraction}
+          onScroll={handleScroll}
+          onMouseEnter={handleInteraction}
           className="flex md:grid md:grid-cols-3 gap-4 md:gap-8 mb-12 md:mb-16 overflow-x-auto md:overflow-x-visible pb-8 md:pb-0 snap-x snap-mandatory scrollbar-hide px-4 md:px-0 -mx-4 md:mx-0"
         >
           {contacts.map((contact, i) => (
@@ -588,18 +783,45 @@ const Contact = () => {
           ))}
         </div>
 
-        {/* Mobile Swipe Hint */}
-        <div className="flex md:hidden items-center justify-center gap-2 mb-10 text-gray-400 font-bold text-[10px] uppercase tracking-[0.2em]">
-          Swipe to see all contacts
-          <motion.div
-            animate={{ x: [0, 5, 0] }}
-            transition={{ duration: 1.5, repeat: Infinity }}
-          >
-            <ArrowRight className="w-3 h-3" />
-          </motion.div>
+        {/* Mobile Swipe Hint & Indicators */}
+        <div className="flex md:hidden flex-col items-center justify-center mb-10">
+          <div className="flex gap-2 mb-4">
+            {contacts.map((_, idx) => (
+              <button
+                key={idx}
+                onClick={() => {
+                  if (scrollRef.current) {
+                    const itemWidth = scrollRef.current.offsetWidth - 32 + 16;
+                    scrollRef.current.scrollTo({
+                      left: idx * itemWidth,
+                      behavior: 'smooth'
+                    });
+                  }
+                }}
+                className={`w-2 h-2 rounded-full transition-all ${
+                  idx === currentIndex ? 'bg-blue-900 w-4' : 'bg-gray-300'
+                }`}
+                aria-label={`Go to slide ${idx + 1}`}
+              />
+            ))}
+          </div>
+          <div className="flex items-center gap-2 text-gray-400 font-bold text-[10px] uppercase tracking-[0.2em]">
+            Swipe to see all contacts
+            <motion.div
+              animate={{ x: [0, 5, 0] }}
+              transition={{ duration: 1.5, repeat: Infinity }}
+            >
+              <ArrowRight className="w-3 h-3" />
+            </motion.div>
+          </div>
         </div>
 
-        <div className="max-w-3xl mx-auto bg-white p-6 md:p-12 rounded-[40px] border border-gray-100 shadow-2xl relative">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="max-w-3xl mx-auto bg-white p-6 md:p-12 rounded-[40px] border border-gray-100 shadow-2xl relative"
+        >
           <form className="space-y-6" onSubmit={handleSubmit}>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
@@ -636,16 +858,34 @@ const Contact = () => {
                 onChange={(e) => setFormData({ ...formData, details: e.target.value })}
               ></textarea>
             </div>
-            <button 
+            <InteractiveButton 
               type="submit"
-              disabled={isSubmitting}
-              className="w-full rounded-full py-3 md:py-4 bg-blue-900 hover:bg-blue-800 text-white font-bold transition-all shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm md:text-base"
+              disabled={isSubmitting || submitted}
+              className="w-full rounded-full py-3 md:py-4 bg-blue-900 hover:bg-blue-800 text-white font-bold transition-all shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm md:text-base h-[52px] md:h-[60px]"
             >
-              {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5" />}
-              {isSubmitting ? 'Sending...' : 'Send Message'}
-            </button>
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                  <span>Sending...</span>
+                </>
+              ) : submitted ? (
+                <motion.div 
+                  initial={{ scale: 0, opacity: 0 }} 
+                  animate={{ scale: 1, opacity: 1 }} 
+                  className="flex items-center gap-2"
+                >
+                  <CheckCircle2 className="w-5 h-5" />
+                  <span>Sent!</span>
+                </motion.div>
+              ) : (
+                <>
+                  <Send className="w-5 h-5" />
+                  <span>Send Message</span>
+                </>
+              )}
+            </InteractiveButton>
           </form>
-        </div>
+        </motion.div>
       </div>
     </section>
   );
@@ -658,7 +898,7 @@ const Footer = () => (
         <div className="col-span-2">
           <div className="mb-6">
             <img 
-              src="/images/logo.jpg" 
+              src="/images/logo-optimized.webp" 
               alt="Kayombo Core Builders Company" 
               className="h-10 md:h-12 w-auto object-contain" 
               loading="lazy"
@@ -742,7 +982,7 @@ export default function Home({ onNavigate, scrollToSection, onClearScroll }: Hom
       {/* Scroll to Top Button */}
       <AnimatePresence>
         {showScrollTop && (
-          <motion.button
+          <InteractiveButton magnetic={false}
             initial={{ opacity: 0, y: 20, scale: 0.8 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.8 }}
@@ -751,7 +991,7 @@ export default function Home({ onNavigate, scrollToSection, onClearScroll }: Hom
             aria-label="Scroll to top"
           >
             <ChevronUp className="w-5 h-5 md:w-6 md:h-6 group-hover:animate-bounce" />
-          </motion.button>
+          </InteractiveButton>
         )}
       </AnimatePresence>
     </div>

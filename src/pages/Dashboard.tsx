@@ -1,3 +1,4 @@
+import { InteractiveButton } from "../components/InteractiveButton";
 import React, { useState, useEffect } from 'react';
 import { 
   LayoutDashboard, 
@@ -149,10 +150,9 @@ export default function Dashboard({ onLogout }: { onLogout: () => void }) {
     e.preventDefault();
     setSaveStatus('Saving...');
     
-    const { error } = await supabase
-      .from('admin_settings')
-      .update({ value: newPassword })
-      .eq('key', 'admin_password');
+    const { error } = await supabase.auth.updateUser({
+      password: newPassword
+    });
 
     if (error) {
       setSaveStatus('Error saving password.');
@@ -162,6 +162,11 @@ export default function Dashboard({ onLogout }: { onLogout: () => void }) {
       toast.success('Password updated successfully!');
       setNewPassword('');
     }
+  };
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+    onLogout();
   };
 
   const Sidebar = () => (
@@ -178,14 +183,14 @@ export default function Dashboard({ onLogout }: { onLogout: () => void }) {
         <div className="p-6 md:p-8">
           <div className="flex items-center justify-between mb-10">
             <div className="flex items-center">
-              <img src="/images/logo.jpg" alt="Kayombo Core Builders Company" className="h-10 w-auto object-contain" />
+              <img src="/images/logo-optimized.webp" alt="Kayombo Core Builders Company" className="h-10 w-auto object-contain" />
             </div>
-            <button 
+            <InteractiveButton magnetic={false} 
               onClick={() => setIsSidebarOpen(false)}
               className="md:hidden p-2 text-gray-400 hover:text-gray-900"
             >
               <LogOut className="w-5 h-5 rotate-180" />
-            </button>
+            </InteractiveButton>
           </div>
 
           <nav className="space-y-1">
@@ -195,7 +200,7 @@ export default function Dashboard({ onLogout }: { onLogout: () => void }) {
               { id: 'messages', label: 'Messages', icon: <MessageSquare className="w-4 h-4" /> },
               { id: 'security', label: 'Security', icon: <ShieldCheck className="w-4 h-4" /> },
             ].map((item) => (
-              <button 
+              <InteractiveButton magnetic={false} 
                 key={item.id}
                 onClick={() => {
                   setActiveTab(item.id as any);
@@ -204,21 +209,21 @@ export default function Dashboard({ onLogout }: { onLogout: () => void }) {
                 className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all ${activeTab === item.id ? 'bg-blue-50 text-blue-900' : 'text-gray-500 hover:bg-gray-50'}`}
               >
                 {item.icon} {item.label}
-              </button>
+              </InteractiveButton>
             ))}
           </nav>
         </div>
 
         <div className="mt-auto p-6 md:p-8 space-y-4">
-          <button className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-gray-500 hover:bg-gray-50 transition-all">
+          <InteractiveButton magnetic={false} className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-gray-500 hover:bg-gray-50 transition-all">
             <Settings className="w-4 h-4" /> Settings
-          </button>
-          <button 
-            onClick={onLogout}
+          </InteractiveButton>
+          <InteractiveButton magnetic={false} 
+            onClick={handleSignOut}
             className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-red-500 hover:bg-red-50 transition-all"
           >
             <LogOut className="w-4 h-4" /> Sign Out
-          </button>
+          </InteractiveButton>
         </div>
       </aside>
     </>
@@ -247,12 +252,12 @@ export default function Dashboard({ onLogout }: { onLogout: () => void }) {
   const Header = ({ title }: { title: string }) => (
     <header className="h-16 md:h-20 bg-white border-b border-gray-100 flex items-center justify-between px-4 md:px-10 sticky top-0 z-30">
       <div className="flex items-center gap-4">
-        <button 
+        <InteractiveButton magnetic={false} 
           onClick={() => setIsSidebarOpen(true)}
           className="p-2 -ml-2 text-gray-400 hover:text-blue-900 md:hidden"
         >
           <LayoutDashboard className="w-6 h-6" />
-        </button>
+        </InteractiveButton>
         <h1 className="text-lg md:text-xl font-extrabold tracking-tight text-gray-900">{title}</h1>
       </div>
       <div className="flex items-center gap-3 md:gap-4">
@@ -303,7 +308,7 @@ export default function Dashboard({ onLogout }: { onLogout: () => void }) {
               <div className="lg:col-span-2 bg-white rounded-[24px] md:rounded-3xl border border-gray-100 shadow-sm overflow-hidden">
                 <div className="p-6 md:p-8 border-b border-gray-50 flex items-center justify-between">
                   <h3 className="font-extrabold text-gray-900 tracking-tight">Recent Projects</h3>
-                  <button onClick={() => setActiveTab('projects')} className="text-blue-900 text-[10px] font-bold uppercase tracking-widest hover:underline">View All</button>
+                  <InteractiveButton magnetic={false} onClick={() => setActiveTab('projects')} className="text-blue-900 text-[10px] font-bold uppercase tracking-widest hover:underline">View All</InteractiveButton>
                 </div>
                 <div className="divide-y divide-gray-50">
                   {projects.slice(0, 5).map((p) => (
@@ -315,7 +320,7 @@ export default function Dashboard({ onLogout }: { onLogout: () => void }) {
                       </div>
                       <div className="flex items-center gap-2">
                         <span className="hidden xs:inline-block px-2 py-0.5 bg-blue-50 text-[9px] md:text-[10px] font-bold uppercase tracking-wider text-blue-900 rounded-md">Live</span>
-                        <button className="p-1.5 md:p-2 hover:bg-gray-100 rounded-lg transition-colors"><MoreVertical className="w-4 h-4 text-gray-400" /></button>
+                        <InteractiveButton magnetic={false} className="p-1.5 md:p-2 hover:bg-gray-100 rounded-lg transition-colors"><MoreVertical className="w-4 h-4 text-gray-400" /></InteractiveButton>
                       </div>
                     </div>
                   ))}
@@ -351,12 +356,12 @@ export default function Dashboard({ onLogout }: { onLogout: () => void }) {
                 <h2 className="text-xl md:text-2xl font-extrabold text-gray-900 tracking-tight">Manage Projects</h2>
                 <p className="text-gray-500 text-xs md:text-sm mt-1">Add, edit or archive your construction portfolio</p>
               </div>
-              <button 
+              <InteractiveButton magnetic={false} 
                 onClick={() => setIsModalOpen(true)}
                 className="w-full sm:w-auto rounded-full px-6 py-3 bg-blue-900 hover:bg-blue-800 text-white text-xs font-bold shadow-lg shadow-blue-900/20 flex items-center justify-center gap-2 transition-all"
               >
                 <Plus className="w-4 h-4" /> Add Project
-              </button>
+              </InteractiveButton>
             </div>
             
             <div className="bg-white rounded-[24px] md:rounded-3xl border border-gray-100 shadow-sm overflow-hidden">
@@ -385,12 +390,12 @@ export default function Dashboard({ onLogout }: { onLogout: () => void }) {
                         </td>
                         <td className="px-6 md:px-8 py-4 md:py-5 text-xs md:text-sm text-gray-500 font-medium">{p.location}</td>
                         <td className="px-6 md:px-8 py-4 md:py-5 text-right">
-                          <button 
+                          <InteractiveButton magnetic={false} 
                             onClick={() => handleDeleteProject(p.id)}
                             className="text-red-400 hover:text-red-600 p-2 transition-colors"
                           >
                             <Trash2 className="w-4 h-4" />
-                          </button>
+                          </InteractiveButton>
                         </td>
                       </tr>
                     ))}
@@ -408,12 +413,12 @@ export default function Dashboard({ onLogout }: { onLogout: () => void }) {
                         <h4 className="font-bold text-gray-900 text-sm truncate">{p.title}</h4>
                         <p className="text-gray-500 text-[10px] uppercase font-bold tracking-widest mt-1">{p.location}</p>
                       </div>
-                      <button 
+                      <InteractiveButton magnetic={false} 
                         onClick={() => handleDeleteProject(p.id)}
                         className="p-2 text-red-400 hover:bg-red-50 rounded-lg transition-colors"
                       >
                         <Trash2 className="w-4 h-4" />
-                      </button>
+                      </InteractiveButton>
                     </div>
                     <div className="flex items-center justify-between">
                       <span className="px-2 py-0.5 bg-blue-50 text-[9px] font-bold uppercase tracking-wider text-blue-900 rounded-md">
@@ -453,9 +458,9 @@ export default function Dashboard({ onLogout }: { onLogout: () => void }) {
               >
                 <div className="p-6 md:p-8 border-b border-gray-100 flex items-center justify-between">
                   <h3 className="text-xl font-extrabold text-gray-900 tracking-tight">Add New Project</h3>
-                  <button onClick={() => setIsModalOpen(false)} className="p-2 text-gray-400 hover:text-gray-900 transition-colors">
+                  <InteractiveButton magnetic={false} onClick={() => setIsModalOpen(false)} className="p-2 text-gray-400 hover:text-gray-900 transition-colors">
                     <CloseIcon className="w-5 h-5" />
-                  </button>
+                  </InteractiveButton>
                 </div>
                 
                 <form onSubmit={handleAddProject} className="p-6 md:p-8 space-y-5">
@@ -522,14 +527,14 @@ export default function Dashboard({ onLogout }: { onLogout: () => void }) {
                   </div>
 
                   <div className="pt-4 flex flex-col sm:flex-row gap-3">
-                    <button 
+                    <InteractiveButton magnetic={false} 
                       type="button"
                       onClick={() => setIsModalOpen(false)}
                       className="flex-1 rounded-full py-4 border border-gray-200 text-[10px] font-bold uppercase tracking-widest text-gray-500 hover:bg-gray-50 transition-all"
                     >
                       Cancel
-                    </button>
-                    <button 
+                    </InteractiveButton>
+                    <InteractiveButton magnetic={false} 
                       type="submit"
                       disabled={isSubmitting}
                       className="flex-1 rounded-full py-4 bg-blue-900 hover:bg-blue-800 text-white text-[10px] font-bold uppercase tracking-widest shadow-lg shadow-blue-900/20 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
@@ -543,7 +548,7 @@ export default function Dashboard({ onLogout }: { onLogout: () => void }) {
                           <Plus className="w-4 h-4" /> Save Project
                         </>
                       )}
-                    </button>
+                    </InteractiveButton>
                   </div>
                 </form>
               </motion.div>
@@ -599,14 +604,14 @@ export default function Dashboard({ onLogout }: { onLogout: () => void }) {
                       </div>
 
                       <div className="flex items-start gap-2">
-                        <button
+                        <InteractiveButton magnetic={false}
                           onClick={() => markAsRead(msg.id, msg.is_read)}
                           className={`p-2 rounded-lg transition-all ${msg.is_read ? 'text-green-600 hover:bg-green-50' : 'text-gray-400 hover:text-blue-900 hover:bg-blue-50'}`}
                           title={msg.is_read ? "Mark as unread" : "Mark as read"}
                         >
                           {msg.is_read ? <CheckCircle2Icon className="w-5 h-5" /> : <Circle className="w-5 h-5" />}
-                        </button>
-                        <button 
+                        </InteractiveButton>
+                        <InteractiveButton magnetic={false} 
                           onClick={async () => {
                             if (!confirm('Delete this message?')) return;
                             await supabase.from('messages').delete().eq('id', msg.id);
@@ -616,7 +621,7 @@ export default function Dashboard({ onLogout }: { onLogout: () => void }) {
                           title="Delete message"
                         >
                           <Trash2 className="w-5 h-5" />
-                        </button>
+                        </InteractiveButton>
                       </div>
                     </div>
                   </motion.div>
@@ -655,12 +660,12 @@ export default function Dashboard({ onLogout }: { onLogout: () => void }) {
                   <p className="mt-3 text-[10px] text-gray-400 font-bold uppercase tracking-widest italic">Updating default 'KAYOMBO123%' password</p>
                 </div>
                 
-                <button 
+                <InteractiveButton magnetic={false} 
                   type="submit"
                   className="w-full sm:w-auto rounded-full px-8 py-4 bg-blue-900 hover:bg-blue-800 text-white text-xs font-bold uppercase tracking-widest shadow-lg shadow-blue-900/20 flex items-center justify-center gap-2 transition-all"
                 >
                   <Save className="w-4 h-4" /> Save Changes
-                </button>
+                </InteractiveButton>
                 {saveStatus && <p className="text-[10px] font-bold text-blue-900 uppercase tracking-[0.2em] mt-4">{saveStatus}</p>}
               </form>
             </div>
