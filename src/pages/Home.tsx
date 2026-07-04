@@ -395,7 +395,7 @@ const OfficeLocation = () => (
   <section className="py-12 md:py-24 bg-white">
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-        <div className="order-2 lg:order-1">
+        <div className="order-1 lg:order-1">
           <span className="inline-block py-1.5 px-4 mb-4 rounded-full bg-blue-50 text-blue-900 text-[10px] font-bold uppercase tracking-[0.2em]">
             Our Headquarters
           </span>
@@ -442,7 +442,7 @@ const OfficeLocation = () => (
           </a>
         </div>
 
-        <div className="order-1 lg:order-2 relative group">
+        <div className="order-2 lg:order-2 relative group">
           <div className="aspect-square rounded-[40px] overflow-hidden border border-gray-100 shadow-2xl relative">
             {/* Real Google Maps Embed */}
             <iframe 
