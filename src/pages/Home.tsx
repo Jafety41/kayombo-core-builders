@@ -44,7 +44,10 @@ const Hero = ({ onNavigate }: { onNavigate: (view: View, sectionId?: string) => 
           <img 
             src="/images/logo.jpg" 
             alt="Kayombo Core Builders Company" 
-            className="h-20 md:h-32 w-auto object-contain bg-transparent mix-blend-multiply" 
+            className="h-20 md:h-32 w-auto object-contain bg-transparent mix-blend-multiply"
+            fetchPriority="high"
+            width={256}
+            height={128}
           />
         </div>
         <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-extrabold tracking-tight text-gray-900 mb-6 md:mb-8 leading-[1.1]">
@@ -90,6 +93,8 @@ const CEOMessage = () => (
               alt="Eng. Kayombo - Founder & CEO" 
               width={128}
               height={128}
+              loading="lazy"
+              decoding="async"
               className="object-cover w-full h-full"
               referrerPolicy="no-referrer"
             />
@@ -659,7 +664,15 @@ const Footer = () => (
       <div className="grid grid-cols-2 md:grid-cols-4 gap-x-8 gap-y-12 mb-16">
         <div className="col-span-2">
           <div className="mb-6">
-            <img src="/images/logo.jpg" alt="Kayombo Core Builders Company" className="h-10 md:h-12 w-auto object-contain" />
+            <img 
+              src="/images/logo.jpg" 
+              alt="Kayombo Core Builders Company" 
+              className="h-10 md:h-12 w-auto object-contain" 
+              loading="lazy"
+              decoding="async"
+              width={160}
+              height={48}
+            />
           </div>
           <p className="text-gray-500 max-w-md leading-relaxed text-sm">
             Kayombo Core Builders Company is a leading civil engineering firm in Dar es Salaam, 

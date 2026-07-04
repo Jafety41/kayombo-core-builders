@@ -156,6 +156,10 @@ export const ProjectCarousel: React.FC<ProjectCarouselProps> = ({ onNavigate }) 
                   src={projects[currentIndex].image} 
                   alt={projects[currentIndex].title}
                   className="w-full h-full object-cover"
+                  loading="lazy"
+                  decoding="async"
+                  width={600}
+                  height={400}
                 />
                 <div className="absolute top-4 left-4">
                   <span className="px-3 py-1 bg-blue-900/90 backdrop-blur-sm text-white text-[10px] font-bold uppercase tracking-widest rounded-lg">
@@ -219,6 +223,10 @@ export const ProjectCarousel: React.FC<ProjectCarouselProps> = ({ onNavigate }) 
                 src={project.image} 
                 alt={project.title}
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                loading="lazy"
+                decoding="async"
+                width={600}
+                height={400}
               />
               <div className="absolute top-4 left-4">
                 <span className="px-3 py-1 bg-white/90 backdrop-blur-sm text-blue-900 text-[10px] font-bold uppercase tracking-widest rounded-lg shadow-sm">
