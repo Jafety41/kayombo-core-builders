@@ -49,7 +49,7 @@ const Portfolio: React.FC<PortfolioProps> = ({ onBack, onNavigate }) => {
           >
             <ArrowLeft className="w-4 h-4" /> Back to Home
           </InteractiveButton>
-          <img src="/images/logo-optimized.webp" alt="KCBC Logo" className="h-10 w-auto object-contain" />
+          <img src="/images/logo.png" alt="KCBC Logo" className="h-10 w-auto object-contain" />
           <div className="w-24 hidden sm:block" /> {/* Spacer */}
         </div>
       </header>

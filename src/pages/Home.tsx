@@ -24,6 +24,8 @@ import { Project } from '../types';
 import { supabase } from '../lib/supabase';
 import { ProjectCarousel } from '../components/ProjectCarousel';
 import { InteractiveButton } from '../components/InteractiveButton';
+import { LottiePlayer } from '../components/LottiePlayer';
+import successAnimation from '../assets/lottie/success.json';
 import { View } from '../App';
 
 interface HomeProps {
@@ -56,7 +58,7 @@ const Hero = ({ onNavigate }: { onNavigate: (view: View, sectionId?: string) => 
           >
             <div className="flex justify-center mb-6 md:mb-8 bg-transparent p-0 rounded-none shadow-none">
               <img 
-                src="/images/logo-optimized.webp" 
+                src="/images/logo.png" 
                 alt="Kayombo Core Builders Company" 
                 className="h-20 md:h-32 w-auto object-contain bg-transparent mix-blend-multiply"
                 fetchPriority="high"
@@ -105,7 +107,7 @@ const CEOMessage = () => (
         <div className="flex flex-col items-center text-center space-y-4 md:flex-row md:items-start md:text-left md:space-x-8 md:space-y-0">
           <div className="flex-shrink-0 w-24 h-24 md:w-32 md:h-32 rounded-xl overflow-hidden border border-gray-100 shadow-inner">
             <img 
-              src="/images/ceo-image-optimized.webp" 
+              src="/images/ceo-image.jpeg" 
               alt="Eng. Kayombo - Founder & CEO" 
               width={128}
               height={128}
@@ -563,9 +565,9 @@ const OfficeLocation = () => (
           <span className="inline-block py-1.5 px-4 mb-4 rounded-full bg-blue-50 text-blue-900 text-[10px] font-bold uppercase tracking-[0.2em]">
             Our Headquarters
           </span>
-          <h2 className="text-2xl md:text-5xl font-extrabold tracking-tight text-gray-900 mb-6 lg:mb-8 leading-tight">Visit Our Office in <br className="hidden lg:block" /> Dar es Salaam</h2>
+          <h2 className="text-2xl md:text-5xl font-extrabold tracking-tight text-gray-900 mb-6 lg:mb-8 leading-tight">Visit Our Office in <br className="hidden lg:block" /> Kijichi</h2>
           <p className="text-sm md:text-lg text-gray-500 mb-8 leading-relaxed font-medium">
-            We are located in the heart of the city, easily accessible for consultations and project meetings. Stop by to discuss your next infrastructure venture.
+            We are based in Kijichi, accessible for consultations and project meetings. Stop by to discuss your next infrastructure venture.
           </p>
           
           <div className="space-y-4 md:space-y-6">
@@ -578,7 +580,7 @@ const OfficeLocation = () => (
               </div>
               <div>
                 <h4 className="font-bold text-gray-900 mb-1 text-base md:text-lg">Physical Address</h4>
-                <p className="text-gray-500 text-xs md:text-base leading-relaxed">UDSM Main Campus, University Road,<br />Dar es Salaam, Tanzania</p>
+                <p className="text-gray-500 text-xs md:text-base leading-relaxed">Kijichi,<br />Dar es Salaam, Tanzania</p>
               </div>
             </motion.div>
 
@@ -615,14 +617,14 @@ const OfficeLocation = () => (
           <div className="aspect-square rounded-[40px] overflow-hidden border border-gray-100 shadow-2xl relative">
             {/* Real Google Maps Embed */}
             <iframe 
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15848.123456789!2d39.2033!3d-6.7811!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x185c4bf46227659b%3A0xe54e60655079a40!2sUniversity%20of%20Dar%20es%20Salaam%20(UDSM)!5e0!3m2!1sen!2stz!4v1700000000000!5m2!1sen!2stz"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15846.680652758156!2d39.2778!3d-6.8821!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x185c4974d6c40a5b%3A0x28975892c902d334!2sKijichi%2C%20Dar%20es%20Salaam!5e0!3m2!1sen!2stz!4v1719999999999!5m2!1sen!2stz"
               width="100%"
               height="100%"
               style={{ border: 0 }}
               allowFullScreen={true}
               loading="eager"
               referrerPolicy="no-referrer-when-downgrade"
-              title="Kayombo Location - UDSM"
+              title="Kayombo Location - Kijichi"
               className="w-full h-full grayscale-[0.3] hover:grayscale-0 transition-all duration-700"
             ></iframe>
             
@@ -636,7 +638,7 @@ const OfficeLocation = () => (
                 <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
                 <span className="text-[10px] font-bold uppercase tracking-widest text-gray-500">Live Location</span>
               </div>
-              <p className="text-sm font-bold text-gray-900 leading-tight">UDSM Campus, Engineering Department Hub.</p>
+              <p className="text-sm font-bold text-gray-900 leading-tight">Kijichi, Dar es Salaam.</p>
             </motion.div>
           </div>
           
@@ -677,21 +679,24 @@ const Contact = () => {
   const contacts = [
     {
       title: "WhatsApp",
-      details: "+255 7XX XXX XXX",
+      details: "0613266252",
       icon: <MessageSquare className="w-5 h-5" />,
-      action: "Chat with us"
+      action: "Chat with us",
+      link: "https://wa.me/255613266252"
     },
     {
       title: "Call Us",
-      details: "+255 22 XXX XXXX",
+      details: "0712293288",
       icon: <Phone className="w-5 h-5" />,
-      action: "Call now"
+      action: "Call now",
+      link: "tel:+255712293288"
     },
     {
       title: "Email",
-      details: "info@kcbc.co.tz",
+      details: "ekayombo71@gmail.com",
       icon: <Mail className="w-5 h-5" />,
-      action: "Send email"
+      action: "Send email",
+      link: "mailto:ekayombo71@gmail.com"
     }
   ];
 
@@ -729,7 +734,7 @@ const Contact = () => {
       setTimeout(() => {
         setSubmitted(false);
         setFormData({ name: '', phone: '', details: '' });
-      }, 1500);
+      }, 2000);
     } catch (err) {
       console.error('Error saving message:', err);
       toast.error('Could not send message. Please check your connection and try again.');
@@ -776,9 +781,14 @@ const Contact = () => {
               </div>
               <h3 className="text-lg md:text-xl font-bold text-gray-900 mb-2">{contact.title}</h3>
               <p className="text-gray-500 text-xs md:text-base mb-6 md:mb-8 font-medium">{contact.details}</p>
-              <button className="w-full mt-auto rounded-full py-3 md:py-4 border border-gray-200 text-[10px] md:text-xs font-bold uppercase tracking-widest text-gray-900 hover:bg-gray-50 transition-all">
+              <a 
+                href={contact.link}
+                target={contact.title === "WhatsApp" ? "_blank" : undefined}
+                rel={contact.title === "WhatsApp" ? "noopener noreferrer" : undefined}
+                className="w-full flex items-center justify-center mt-auto rounded-full px-4 py-3 md:py-4 bg-blue-600 hover:bg-blue-700 text-[10px] md:text-xs font-bold uppercase tracking-widest text-white transition-all shadow-md shadow-blue-500/20 text-center"
+              >
                 {contact.action}
-              </button>
+              </a>
             </motion.div>
           ))}
         </div>
@@ -820,71 +830,91 @@ const Contact = () => {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="max-w-3xl mx-auto bg-white p-6 md:p-12 rounded-[40px] border border-gray-100 shadow-2xl relative"
+          className="max-w-3xl mx-auto bg-white p-6 md:p-12 rounded-[40px] border border-gray-100 shadow-2xl relative overflow-hidden"
         >
-          <form className="space-y-6" onSubmit={handleSubmit}>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700">Full Name</label>
-                <input 
-                  type="text" 
-                  required
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-900/10 focus:border-blue-900 transition-all" 
-                  placeholder="John Doe"
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700">Phone Number</label>
-                <input 
-                  type="tel" 
-                  required
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-900/10 focus:border-blue-900 transition-all" 
-                  placeholder="+255..." 
-                  value={formData.phone}
-                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                />
-              </div>
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">Project Details</label>
-              <textarea 
-                rows={4} 
-                required
-                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-900/10 focus:border-blue-900 transition-all" 
-                placeholder="Tell us about your project..."
-                value={formData.details}
-                onChange={(e) => setFormData({ ...formData, details: e.target.value })}
-              ></textarea>
-            </div>
-            <InteractiveButton 
-              type="submit"
-              disabled={isSubmitting || submitted}
-              className="w-full rounded-full py-3 md:py-4 bg-blue-900 hover:bg-blue-800 text-white font-bold transition-all shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm md:text-base h-[52px] md:h-[60px]"
-            >
-              {isSubmitting ? (
-                <>
-                  <Loader2 className="w-5 h-5 animate-spin" />
-                  <span>Sending...</span>
-                </>
-              ) : submitted ? (
-                <motion.div 
-                  initial={{ scale: 0, opacity: 0 }} 
-                  animate={{ scale: 1, opacity: 1 }} 
-                  className="flex items-center gap-2"
+          <AnimatePresence mode="wait">
+            {!submitted ? (
+              <motion.form 
+                key="contact-form"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="space-y-6" 
+                onSubmit={handleSubmit}
+              >
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-gray-700">Full Name</label>
+                    <input 
+                      type="text" 
+                      required
+                      className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-900/10 focus:border-blue-900 transition-all" 
+                      placeholder="Names"
+                      value={formData.name}
+                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-gray-700">Phone Number</label>
+                    <input 
+                      type="tel" 
+                      required
+                      className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-900/10 focus:border-blue-900 transition-all" 
+                      placeholder="+255..." 
+                      value={formData.phone}
+                      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                    />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-gray-700">Project Details</label>
+                  <textarea 
+                    rows={4} 
+                    required
+                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-900/10 focus:border-blue-900 transition-all" 
+                    placeholder="Tell us about your project..."
+                    value={formData.details}
+                    onChange={(e) => setFormData({ ...formData, details: e.target.value })}
+                  ></textarea>
+                </div>
+                <InteractiveButton 
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="w-full rounded-full py-3 md:py-4 bg-blue-900 hover:bg-blue-800 text-white font-bold transition-all shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm md:text-base h-[52px] md:h-[60px]"
                 >
-                  <CheckCircle2 className="w-5 h-5" />
-                  <span>Sent!</span>
-                </motion.div>
-              ) : (
-                <>
-                  <Send className="w-5 h-5" />
-                  <span>Send Message</span>
-                </>
-              )}
-            </InteractiveButton>
-          </form>
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                      <span>Sending...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Send className="w-5 h-5" />
+                      <span>Send Message</span>
+                    </>
+                  )}
+                </InteractiveButton>
+              </motion.form>
+            ) : (
+              <motion.div
+                key="success-animation"
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0 }}
+                className="flex flex-col items-center justify-center py-12 text-center"
+              >
+                <div className="w-48 h-48 mb-6">
+                  <LottiePlayer 
+                    animationData={successAnimation}
+                    loop={false}
+                    autoplay={true}
+                  />
+                </div>
+                <h3 className="text-2xl md:text-3xl font-extrabold text-gray-900 mb-2">Message Sent!</h3>
+                <p className="text-gray-500 font-medium">Thank you for reaching out. We'll get back to you shortly.</p>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </motion.div>
       </div>
     </section>
@@ -898,7 +928,7 @@ const Footer = () => (
         <div className="col-span-2">
           <div className="mb-6">
             <img 
-              src="/images/logo-optimized.webp" 
+              src="/images/logo.png" 
               alt="Kayombo Core Builders Company" 
               className="h-10 md:h-12 w-auto object-contain" 
               loading="lazy"
@@ -923,8 +953,8 @@ const Footer = () => (
         <div className="col-span-1">
           <h4 className="text-[10px] md:text-xs font-bold uppercase tracking-widest text-gray-900 mb-6">Contact</h4>
           <ul className="space-y-4 text-sm">
-            <li className="flex items-center gap-3 text-gray-500"><MapPin className="w-4 h-4 shrink-0" /> Dar es Salaam</li>
-            <li className="flex items-center gap-3 text-gray-500"><Phone className="w-4 h-4 shrink-0" /> +255 22 XXX</li>
+            <li className="flex items-center gap-3 text-gray-500"><MapPin className="w-4 h-4 shrink-0" /> Kijichi, Dar es Salaam</li>
+            <li className="flex items-center gap-3 text-gray-500"><Phone className="w-4 h-4 shrink-0" /> 0712293288</li>
             <li className="flex items-center gap-3 text-gray-500"><Clock className="w-4 h-4 shrink-0" /> 8am - 6pm</li>
           </ul>
         </div>
@@ -932,8 +962,8 @@ const Footer = () => (
       <div className="border-t border-gray-100 pt-10 flex flex-col md:flex-row items-center justify-between gap-6 text-[10px] uppercase tracking-widest text-gray-400 font-bold text-center md:text-left">
         <div className="max-w-[250px] md:max-w-none">© 2026 KAYOMBO CORE BUILDERS COMPANY LTD — DAR ES SALAAM, TZ</div>
         <div className="flex flex-col sm:flex-row gap-4 sm:gap-8 items-center">
-          <span>WhatsApp: +255 7XX XXX XXX</span>
-          <span>Email: info@kcbc.co.tz</span>
+          <span>WhatsApp: 0613266252</span>
+          <span>Email: ekayombo71@gmail.com</span>
         </div>
       </div>
     </div>
@@ -987,7 +1017,7 @@ export default function Home({ onNavigate, scrollToSection, onClearScroll }: Hom
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.8 }}
             onClick={scrollToTop}
-            className="fixed bottom-[5.5rem] right-6 md:bottom-28 md:right-8 z-[60] w-10 h-10 md:w-14 md:h-14 bg-blue-900 text-white rounded-full flex items-center justify-center shadow-2xl shadow-blue-900/40 hover:bg-blue-800 transition-all hover:-translate-y-1 active:scale-95 group"
+            className="fixed bottom-24 right-8 md:bottom-32 md:right-12 z-[60] w-12 h-12 md:w-16 md:h-16 bg-blue-900 text-white rounded-full flex items-center justify-center shadow-2xl shadow-blue-900/40 hover:bg-blue-800 transition-all hover:-translate-y-1 active:scale-95 group"
             aria-label="Scroll to top"
           >
             <ChevronUp className="w-5 h-5 md:w-6 md:h-6 group-hover:animate-bounce" />

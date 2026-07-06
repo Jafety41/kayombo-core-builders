@@ -61,7 +61,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ onBack }) => {
           >
             <ArrowLeft className="w-4 h-4" /> Back to Home
           </button>
-          <img src="/images/logo-optimized.webp" alt="KCBC Logo" className="h-10 w-auto object-contain" />
+          <img src="/images/logo.png" alt="KCBC Logo" className="h-10 w-auto object-contain" />
           <div className="w-24 hidden sm:block" />
         </div>
       </header>
@@ -114,7 +114,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ onBack }) => {
                         required
                         type="text" 
                         className="w-full px-5 py-4 rounded-2xl border border-gray-100 focus:ring-2 focus:ring-blue-900/10 focus:border-blue-900 outline-none transition-all"
-                        placeholder="John Doe"
+                        placeholder="Names"
                         value={formData.name}
                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                       />
@@ -125,7 +125,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ onBack }) => {
                         required
                         type="tel" 
                         className="w-full px-5 py-4 rounded-2xl border border-gray-100 focus:ring-2 focus:ring-blue-900/10 focus:border-blue-900 outline-none transition-all"
-                        placeholder="+255 7XX XXX XXX"
+                        placeholder="+255..."
                         value={formData.phone}
                         onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                       />
@@ -139,7 +139,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ onBack }) => {
                         required
                         type="email" 
                         className="w-full px-5 py-4 rounded-2xl border border-gray-100 focus:ring-2 focus:ring-blue-900/10 focus:border-blue-900 outline-none transition-all"
-                        placeholder="john@example.com"
+                        placeholder="ekayombo71@gmail.com"
                         value={formData.email}
                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                       />
@@ -150,7 +150,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ onBack }) => {
                         required
                         type="text" 
                         className="w-full px-5 py-4 rounded-2xl border border-gray-100 focus:ring-2 focus:ring-blue-900/10 focus:border-blue-900 outline-none transition-all"
-                        placeholder="e.g. Kigamboni, Dar es Salaam"
+                        placeholder="e.g. Kijichi, Dar es Salaam"
                         value={formData.location}
                         onChange={(e) => setFormData({ ...formData, location: e.target.value })}
                       />

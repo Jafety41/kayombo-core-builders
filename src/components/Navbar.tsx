@@ -58,7 +58,7 @@ export const Navbar = ({ currentView, onNavigate }: NavbarProps) => {
             onClick={() => onNavigate('home')}
           >
             <img 
-              src="/images/logo-optimized.webp" 
+              src="/images/logo.png" 
               alt="Kayombo Core Builders Company" 
               className="h-10 md:h-16 w-auto object-contain" 
             />

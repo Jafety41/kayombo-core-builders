@@ -17,15 +17,15 @@ import { Toaster } from 'sonner';
 function WhatsAppButton() {
   return (
     <a
-      href="https://wa.me/255700000000"
+      href="https://wa.me/255613266252"
       target="_blank"
       rel="noopener noreferrer"
-      className="fixed bottom-4 right-4 md:bottom-8 md:right-8 z-[70] w-8 h-8 md:w-16 md:h-16 bg-[#25D366] text-white rounded-full flex items-center justify-center shadow-2xl hover:bg-[#20bd5a] transition-transform hover:scale-110 active:scale-95"
+      className="fixed bottom-8 right-8 md:bottom-12 md:right-12 z-[70] w-12 h-12 md:w-20 md:h-20 bg-[#25D366] text-white rounded-full flex items-center justify-center shadow-2xl hover:bg-[#20bd5a] transition-transform hover:scale-110 active:scale-95"
       aria-label="WhatsApp Us"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        className="w-4 h-4 md:w-9 md:h-9"
+        className="w-6 h-6 md:w-11 md:h-11"
         fill="currentColor"
         viewBox="0 0 24 24"
       >
